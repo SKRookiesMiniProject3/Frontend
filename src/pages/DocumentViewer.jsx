@@ -1,19 +1,18 @@
-// src/pages/DocumentViewer.jsx
 import React from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FilterTabs from '../components/FilterTabs';
 import DocumentGrid from '../components/DocumentGrid';
 // import Pagination from '../components/Pagination';
-import styles from './DocumentViewer.module.css'; 
+import './DocumentViewer.css';
 
 const DocumentViewer = () => {
   return (
-    <div className={styles.viewerContainer}>
+    <div className="viewer-container">
       <Header />
-      <div className={styles.mainContent}>
+      <div className="main-content">
         <Sidebar />
-        <div className={styles.contentArea}>
+        <div className="content-area">
           <FilterTabs />
           <DocumentGrid />
           {/* <Pagination /> */}
