@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 25px 24px;
   background-color: white;
   border-bottom: 1px solid #e5e5e5;
 }
@@ -33,15 +33,7 @@
 .shieldIcon {
   color: #4a4a9a;
 }
-
-.profileCircle {
-  background-color: #4a4a9a;
-  color: white;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+.rookieslogo{
+    height: 20px;
+    padding-right: 15px;
 }
