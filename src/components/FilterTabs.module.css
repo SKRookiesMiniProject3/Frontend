@@ -1,0 +1,28 @@
+.filterContainer {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tab:hover {
+  background-color: #ddd;
+}
+
+.active {
+  background-color: #a98eda;
+  color: white;
+  font-weight: bold;
+}
