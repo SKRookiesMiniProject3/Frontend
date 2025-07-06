@@ -4,5 +4,5 @@
   gap: 20px;
   padding: 20px 0;
 
-  width: 100%; /* ✅ grid 자체도 확장되도록 추가 */
+  width: 100%;
 }
