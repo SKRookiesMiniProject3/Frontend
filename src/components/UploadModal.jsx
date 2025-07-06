@@ -4,44 +4,51 @@ import styles from "./UploadModal.module.css";
 const UploadModal = ({ onClose, onUpload }) => {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
-  const [category, setCategory] = useState("사업계획서"); // ✅ 보고서 종류
+  const [category, setCategory] = useState("사업계획서");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !file) return;
-    onUpload({ title, file, category }); // ✅ category도 함께 전송
+    if (!title || !file) {
+      alert("제목과 파일을 모두 입력해주세요.");
+      return;
+    }
+    onUpload({ title, file, category });
     onClose();
   };
 
   return (
     <div className={styles.modalBackdrop}>
       <div className={styles.modal}>
-        <h2>문서 등록</h2>
-        <form onSubmit={handleSubmit}>
-          <label>
-            제목:
+        <h2 className={styles.title}>문서 등록</h2>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <label className={styles.label}>
+            문서명
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className={styles.input}
+              placeholder="문서 제목을 입력하세요"
               required
             />
           </label>
 
-          <label>
-            파일:
+          <label className={styles.label}>
+            파일 업로드
             <input
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
+              className={styles.input}
               required
             />
           </label>
 
-          <label>
-            보고서 종류:
+          <label className={styles.label}>
+            보고서 종류
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              className={styles.select}
             >
               <option value="사업계획서">사업계획서</option>
               <option value="R&D 계획서">R&D 계획서</option>
@@ -52,10 +59,8 @@ const UploadModal = ({ onClose, onUpload }) => {
           </label>
 
           <div className={styles.buttonGroup}>
-            <button type="submit">업로드</button>
-            <button type="button" onClick={onClose}>
-              취소
-            </button>
+            <button type="submit" className={styles.uploadBtn}>업로드</button>
+            <button type="button" onClick={onClose} className={styles.cancelBtn}>취소</button>
           </div>
         </form>
       </div>

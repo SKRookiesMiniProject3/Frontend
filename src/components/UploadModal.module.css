@@ -2,43 +2,71 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3); /* 어두운 백드롭 */
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .modal {
-  background: #fff;
-  padding: 2rem;
+  background: white;
+  padding: 30px;
   border-radius: 12px;
   width: 400px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
-.modal h2 {
-  margin-top: 0;
+.title {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  text-align: center;
 }
 
-.modal label {
-  display: block;
-  margin-bottom: 1rem;
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.modal input,
-.modal select {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
-  font-size: 1rem;
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.input,
+.select {
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 
 .buttonGroup {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.uploadBtn {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
 }
