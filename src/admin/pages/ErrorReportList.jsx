@@ -10,6 +10,7 @@ const ErrorReportList = () => {
   const itemsPerPage = 6;
   const [statusFilter, setStatusFilter] = useState("");
   const [period, setPeriod] = useState("7");
+  const [mode, setMode] = useState("리포트 관리");
 
   const reports = [
     { no: 1, name: '이도건', fileId: 121, created_dt: '🗓️ 2025.06.12', status: '처리' },
@@ -46,7 +47,7 @@ const ErrorReportList = () => {
     <div className="viewer-container">
       <Header />
       <div className="main-content">
-        <Sidebar active="리포트 관리" />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} />
         <div className="content-area">
           <h2 className="page-title">에러 리포트 관리</h2>
 

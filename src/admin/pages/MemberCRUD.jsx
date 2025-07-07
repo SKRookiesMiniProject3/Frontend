@@ -1,20 +1,24 @@
 import React, { useState, useEffect }  from 'react';
-import { fetchUsers } from '../api/api';
+import { fetchUsers } from '../api/users';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 import MemberListTable from '../components/member/MemberListTable';
 import MemberListToolbar from '../components/member/MemberListToolbar';
 import MemberViewForm from "../components/member/MemberViewForm";
+import useUserStore from '../stores/userStore';
 
 const MemberCRUD = () => {
-  const [members, setMembers] = useState([]);
+  const users = useUserStore((state) => state.users);
+  const setUsers = useUserStore((state) => state.setUsers);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
+  const [mode, setMode] = useState("회원관리");
 
   useEffect(() => {
-    fetchUsers().then((users) => {
-      const formatted = users.map((u) => ({
+    fetchUsers().then((fetchedUsers) => {
+      const formatted = fetchedUsers.map((u) => ({
         id: u.id,
         name: u.username,
         email: `📧 ${u.email}`,
@@ -24,9 +28,9 @@ const MemberCRUD = () => {
         roleDescription: u.roleDescription,
         checked: false
       }));
-      setMembers(formatted);
+      setUsers(formatted);
     });
-  }, []);
+  }, [setUsers]);
   
   //이름 검색
   const handleSearch = (keyword) => setSearchTerm(keyword);
@@ -36,27 +40,31 @@ const MemberCRUD = () => {
 
   //체크박스
   const handleCheck = (id, checked) => {
-    const updated = members.map((m) =>
+    const updated = users.map((m) =>
       m.id === id ? { ...m, checked } : m
     );
-    setMembers(updated);
+    setUsers(updated);
   };
 
   // 조회 버튼 클릭 핸들러
   const handleView = () => {
-    const checked = members.filter((m) => m.checked);
+    const checked = users.filter((m) => m.checked);
+    console.log("선택된 회원:", checked);
+
     if (checked.length !== 1) {
       alert("조회할 회원을 1명만 선택하세요.");
       return;
     }
+
     setSelectedMember(checked[0]);
+    console.log("setSelectedMember:", checked[0]);
   };
 
   return (
     <div className="viewer-container">
       <Header />
       <div className="main-content">
-        <Sidebar active="회원관리" />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} />
         <div className="content-area">
           
           {/* 회원 상단 툴바 */}
@@ -68,7 +76,7 @@ const MemberCRUD = () => {
 
           {/* 회원 테이블 */}
           <MemberListTable
-            members={members}
+            members={users}
             searchTerm={searchTerm}
             currentPage={currentPage}
             itemsPerPage={7}
@@ -81,7 +89,7 @@ const MemberCRUD = () => {
 
           {selectedMember && (
             <MemberViewForm
-              member={selectedMember}
+              memberId={selectedMember.id}
               onClose={() => setSelectedMember(null)}
             />
           )}

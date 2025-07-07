@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers } from '../api/api';
+import { fetchUsers } from '../api/users';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 import ErrorReportTable from '../components/report/ErrorReportTable';
@@ -9,8 +9,8 @@ import WeeklyReportChart from '../components/report/WeeklyReportChart';
 import "../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
-
   const [memberData, setMemberData] = useState([]);
+  const [mode, setMode] = useState("대시보드");
 
   useEffect(() => {
     fetchUsers().then((users) => {
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
     <div className="viewer-container">
       <Header />
       <div className="main-content">
-        <Sidebar active="대시보드" />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} />
         <div className="content-area">
           
           {/* 합계 카드 */}

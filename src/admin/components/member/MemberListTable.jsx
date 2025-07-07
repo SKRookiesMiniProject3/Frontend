@@ -2,19 +2,21 @@ import React, { useState }  from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './MemberListTable.css';
+import useUserStore from '../../stores/userStore';
 
 const MemberListTable = ({
-  members = [],
   limit = null,
   showSeeMore = true,
   showCheck = true,
-  onCheck,
   usePagination = false,
   currentPage = 1,
   itemsPerPage = 7,
   searchTerm = "",
   onPageChange = () => {},
 }) => {
+  const users = useUserStore((state) => state.users);
+  const setUsers = useUserStore((state) => state.setUsers);
+
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const navigate = useNavigate();
 
@@ -34,7 +36,7 @@ const MemberListTable = ({
   };
 
   //검색 필터 적용
-  const filtered = members.filter((m) =>
+  const filtered = users.filter((m) =>
     m.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -72,7 +74,13 @@ const MemberListTable = ({
     }));
   };
 
-  //메인 대시보드(회원 5명만)
+  const handleCheck = (id, checked) => {
+    const updated = users.map((m) =>
+      m.id === id ? { ...m, checked } : m
+    );
+    setUsers(updated);
+  };
+
   return (
     <div className="member-list-container">
       <div className="table-header">
@@ -160,7 +168,7 @@ const MemberListTable = ({
                   <input
                     type="checkbox"
                     checked={m.checked || false}
-                    onChange={(e) => onCheck(m.id, e.target.checked)}
+                    onChange={(e) => handleCheck(m.id, e.target.checked)}
                   />
                 )}
                 {m.id}
