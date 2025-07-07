@@ -1,6 +1,5 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // 로그인 성공 후 페이지 이동용
 import styles from "./LoginPage.module.css";
 import logoImage from "../assets/log2doc.png";
 import { loginUser } from "../api/auth";
@@ -10,24 +9,25 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const login = useAuthStore((state) => state.login); 
-  const navigate = useNavigate();
+
+  const login = useAuthStore((state) => state.login); // ✅ store의 login 함수
 
   const handleLogin = async () => {
-    try {
-      const result = await loginUser(username, password);
-      console.log("로그인 성공:", result);
-
-      
-      login(result.accessToken);
-
-      
-      navigate("/viewer"); // 또는 메인 페이지 등
-    } catch (err) {
-      console.error("로그인 실패:", err);
-      setError(err.message || "로그인 실패");
+  try {
+    const result = await loginUser(username, password);
+    const accessToken = result.token; // ✅ 여기 중요!
+    if (!accessToken) {
+      throw new Error("accessToken이 없습니다.");
     }
-  };
+
+    login(accessToken); // ✅ Zustand에 저장 + localStorage 저장
+    console.log("✅ 로그인 성공 - 저장된 토큰:", accessToken);
+    console.log("✅ localStorage 저장됨:", localStorage.getItem("accessToken"));
+  } catch (err) {
+    console.error("로그인 실패:", err);
+    setError(err.message || "로그인 실패");
+  }
+};
 
   return (
     <div className={styles.loginContainer}>
