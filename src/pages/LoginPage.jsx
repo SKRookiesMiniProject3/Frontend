@@ -10,19 +10,19 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const login = useAuthStore((state) => state.login); // ✅ store의 login 함수
+  const login = useAuthStore((state) => state.login); 
 
   const handleLogin = async () => {
   try {
     const result = await loginUser(username, password);
-    const accessToken = result.token; // ✅ 여기 중요!
+    const accessToken = result.token;
     if (!accessToken) {
       throw new Error("accessToken이 없습니다.");
     }
 
-    login(accessToken); // ✅ Zustand에 저장 + localStorage 저장
-    console.log("✅ 로그인 성공 - 저장된 토큰:", accessToken);
-    console.log("✅ localStorage 저장됨:", localStorage.getItem("accessToken"));
+    login(accessToken); 
+    console.log(" 로그인 성공 - 저장된 토큰:", accessToken);
+    console.log(" localStorage 저장됨:", localStorage.getItem("accessToken"));
   } catch (err) {
     console.error("로그인 실패:", err);
     setError(err.message || "로그인 실패");

@@ -9,7 +9,7 @@ const useAuthStore = create((set) => {
     isLoggedIn,
     accessToken: token,
     login: (token) => {
-      localStorage.setItem("accessToken", token); // ✅ 로컬 저장
+      localStorage.setItem("accessToken", token); 
       set({ isLoggedIn: true, accessToken: token });
     },
     logout: () => {
