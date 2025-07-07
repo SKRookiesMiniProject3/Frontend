@@ -6,6 +6,12 @@ import ReportTrendChart from "../components/report/ReportTrendChart";
 import "../styles/ErrorReportList.css";
 import errorReportStore from "../stores/errorReportStore";
 
+const statusLabelMap = {
+  NOT_STARTED: "미처리",
+  IN_PROGRESS: "진행 중",
+  COMPLETED: "처리",
+};
+
 const ErrorReportList = () => {
   const reports = errorReportStore((state) => state.reports);
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,30 +55,18 @@ const ErrorReportList = () => {
 
           {/* 상태 필터 버튼 */}
           <div className="status-filter-container">
-            <button
-              className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`}
-              onClick={() => setStatusFilter("")}
-            >
+            <button className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`} onClick={() => setStatusFilter("")}>
               전체
             </button>
-            <button
-              className={`status-filter-btn ${statusFilter === "NOT_STARTED" ? "active" : ""}`}
-              onClick={() => setStatusFilter("NOT_STARTED")}
-            >
-              미처리
-            </button>
-            <button
-              className={`status-filter-btn ${statusFilter === "IN_PROGRESS" ? "active" : ""}`}
-              onClick={() => setStatusFilter("IN_PROGRESS")}
-            >
-              진행 중
-            </button>
-            <button
-              className={`status-filter-btn ${statusFilter === "COMPLETED" ? "active" : ""}`}
-              onClick={() => setStatusFilter("COMPLETED")}
-            >
-              처리
-            </button>
+            {Object.entries(statusLabelMap).map(([key, label]) => (
+              <button
+                key={key}
+                className={`status-filter-btn ${statusFilter === key ? "active" : ""}`}
+                onClick={() => setStatusFilter(key)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           <ErrorReportTable

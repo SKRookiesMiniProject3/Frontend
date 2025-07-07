@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const tempToken = 'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MTg4NTE4OSwiZXhwIjoxNzUxOTcxNTg5fQ.P1LclGqTxcsCKYKhCkIITfyvK2zEwtcT50ardGNHzixXgMwDbIHcqVg_m67luCZd';
-//const tempToken = '임의 토큰값';
+const tempToken = '임의 토큰값';
 
 // 전체 사용자 목록 조회
 export const fetchUsers = async () => {

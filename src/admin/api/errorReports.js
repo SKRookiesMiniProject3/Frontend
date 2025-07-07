@@ -15,3 +15,22 @@ export const fetchErrorReports = async () => {
     return [];
   }
 };
+
+//에러 리포트 개별 수정
+export const updateErrorReport = async (id, status, comment) => {
+  try {
+    const response = await axios.patch(`${BASE_URL}/api/v1/error-reports/${id}`, 
+      {
+        report_status: status,
+        report_comment: comment,
+      }, 
+      {
+        headers: { Authorization: `Bearer ${tempToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`에러 리포트 수정 실패 (ID: ${id}):`, error);
+    throw error;
+  }
+};
