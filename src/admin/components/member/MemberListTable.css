@@ -1,0 +1,134 @@
+.member-list-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.table-title {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.member-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.member-list-table th, .member-list-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  align-items: center;
+  gap: 4px;
+}
+
+.sort-indicator {
+  font-size: 10px;
+  color: #bbb;
+}
+
+.sorted {
+  color: #6366f1;
+}
+
+.role-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+/* 역할별 색상 */
+.role-badge.intern {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.role-badge.staff {
+  background-color: #fde68a;
+  color: #92400e;
+}
+
+.role-badge.senior-staff {
+  background-color: #fbfb4b;
+  color: #899412;
+}
+
+.role-badge.assistant-manager {
+  background-color: #99f6e4;
+  color: #0d9488;
+}
+
+.role-badge.manager {
+  background-color: #8aeefd;
+  color: #1a7f80;
+}
+
+.role-badge.senior-manager {
+  background-color: #a5b4fc;
+  color: #4338ca;
+}
+
+.role-badge.director {
+  background-color: #8a92fd;
+  color: #514dbb;
+}
+
+.role-badge.vice-president {
+  background-color: #c4b5fd;
+  color: #7e22ce;
+}
+
+.role-badge.ceo {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.see-more-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: #6366f1;
+  cursor: pointer;
+  text-decoration: underline;
+  outline: none;
+}
+
+.see-more-btn:focus {
+  outline: none;
+}
+
+.see-more-btn:hover {
+  text-decoration: underline;
+  color: #4338ca;
+}
+
+.check-all-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}

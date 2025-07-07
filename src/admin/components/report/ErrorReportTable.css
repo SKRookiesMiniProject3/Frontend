@@ -1,0 +1,117 @@
+.content-area {
+  flex: 1;
+  padding: 20px;
+  background-color: #f9fafb;
+  overflow-y: auto;
+}
+
+.error-report-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.table-title {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.error-report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.error-report-table th, .error-report-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  align-items: center;
+  gap: 4px;
+}
+
+.sort-indicator {
+  font-size: 10px;
+  color: #bbb;
+}
+
+.sorted {
+  color: #6366f1;
+}
+
+.status {
+  display: inline-flex; /* 수평 중앙 정렬 위해 flex 사용 */
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 16px;
+  width: 70px;
+  height: 19px;
+  text-align: center;
+}
+
+.status.completed {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.status.inprogress {
+  background-color: #fde68a;
+  color: #92400e;
+}
+
+.status.unprocessed {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.role-badge.executive {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.check-btn {
+  background: #dec6ea;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  height: 24px;
+  line-height: 16px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.see-more-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: #6366f1;
+  cursor: pointer;
+  text-decoration: underline;
+  outline: none;
+}
+
+.see-more-btn:focus {
+  outline: none; /* 클릭 또는 키보드 포커스 시 테두리 제거 */
+}
+
+.see-more-btn:hover {
+  text-decoration: underline;
+  color: #4338ca;
+}

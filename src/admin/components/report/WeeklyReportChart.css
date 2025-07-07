@@ -1,0 +1,90 @@
+.weekly-chart-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  text-align: center;
+  height: 410px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1e1b4b;
+}
+
+.see-more-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: #6366f1;
+  cursor: pointer;
+  text-decoration: underline;
+  outline: none;
+}
+
+.see-more-btn:focus {
+  outline: none;
+}
+
+.see-more-btn:hover {
+  text-decoration: underline;
+  color: #4338ca;
+}
+
+.doughnut-wrapper {
+  width: 300px;
+  height: 400px;
+  margin: 0 auto;
+  background: none;
+}
+
+.chart-legend-custom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.color-1 {
+  background-color: #4f52f4;
+}
+
+.color-2 {
+  background-color: #8294f1;
+}
+
+.color-3 {
+  background-color: #acb9f8;
+}
+
+.color-4 {
+  background-color: #e0e7ff;
+}

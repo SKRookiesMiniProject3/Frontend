@@ -1,0 +1,35 @@
+.stat-card-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.report-chart-wrapper {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 5px;
+}
+
+.report-table-container {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.weekly-chart-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.error-report-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
