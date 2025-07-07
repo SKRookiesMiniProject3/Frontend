@@ -2,32 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './ErrorReportTable.css';
+import errorReportStore from "../../stores/errorReportStore";
 
 const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1, itemsPerPage = 5, onPageChange = () => {}, limit, statusFilter = "", enableStatusFilter = false,}) => {
+  const reports = errorReportStore((state) => state.reports);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const navigate = useNavigate();
-
-  const reports = [
-    { no: 1, name: '이도건', fileId: 121, created_dt: '🗓️ 2025.07.01', status: '처리' },
-    { no: 2, name: '이도건', fileId: 15, created_dt: '🗓️ 2025.07.03', status: '진행 중' },
-    { no: 3, name: '이도건', fileId: 5, created_dt: '🗓️ 2025.07.02', status: '처리' },
-    { no: 4, name: '이도건', fileId: 11, created_dt: '🗓️ 2025.07.02', status: '미처리' },
-    { no: 5, name: '이도건', fileId: 1, created_dt: '🗓️ 2025.07.01', status: '진행 중' },
-    { no: 6, name: '이도건', fileId: 74, created_dt: '🗓️ 2025.07.04', status: '미처리' },
-    { no: 7, name: '이도건', fileId: 2, created_dt: '🗓️ 2025.07.05', status: '미처리' },
-  ];
 
   //에러 리포트 status
   const statusPriority = {
     "처리": 1,
     "진행 중": 2,
     "미처리": 3,
-  };
-
-  const statusMap = {
-    "미처리": "NOT_STARTED",
-    "진행 중": "IN_PROGRESS",
-    "처리": "COMPLETED",
   };
 
   const getStatusClass = (status) => {
@@ -41,6 +27,11 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
       default:
         return '';
     }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `🗓️ ${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
   //에러 리포트 정렬
@@ -104,23 +95,19 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
       <table className="error-report-table">
         <thead>
           <tr>
-            <th onClick={() => handleSort("no")}>
+            <th onClick={() => handleSort("id")}>
               No
-              <span className={`sort-indicator ${sortConfig.key === "no" ? "sorted" : ""}`}>
-                {sortConfig.key === "no"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
+              <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
+                {sortConfig.key === "id"
+                  ? sortConfig.direction === "asc" ? "▲" : "▼"
                   : "▼"}
               </span>
             </th>
-            <th onClick={() => handleSort("name")}>
-              Member Name
-              <span className={`sort-indicator ${sortConfig.key === "name" ? "sorted" : ""}`}>
-                {sortConfig.key === "name"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
+            <th onClick={() => handleSort("memberId")}>
+              Member ID
+              <span className={`sort-indicator ${sortConfig.key === "memberId" ? "sorted" : ""}`}>
+                {sortConfig.key === "memberId"
+                  ? sortConfig.direction === "asc" ? "▲" : "▼"
                   : "▼"}
               </span>
             </th>
@@ -128,9 +115,7 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
               File ID
               <span className={`sort-indicator ${sortConfig.key === "fileId" ? "sorted" : ""}`}>
                 {sortConfig.key === "fileId"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
+                  ? sortConfig.direction === "asc" ? "▲" : "▼"
                   : "▼"}
               </span>
             </th>
@@ -138,9 +123,7 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
               Date
               <span className={`sort-indicator ${sortConfig.key === "created_dt" ? "sorted" : ""}`}>
                 {sortConfig.key === "created_dt"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
+                  ? sortConfig.direction === "asc" ? "▲" : "▼"
                   : "▼"}
               </span>
             </th>
@@ -148,9 +131,7 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
               Report Status
               <span className={`sort-indicator ${sortConfig.key === "status" ? "sorted" : ""}`}>
                 {sortConfig.key === "status"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
+                  ? sortConfig.direction === "asc" ? "▲" : "▼"
                   : "▼"}
               </span>
             </th>
@@ -159,31 +140,23 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
         </thead>
         <tbody>
           {paginatedReports.map((row) => (
-            <tr key={`${row.no}-${row.fileId}-${row.status}`}>
-              <td>{row.no}</td>
-              <td>{row.name}</td>
+            <tr key={`${row.id}-${row.fileId}`}>
+              <td>{row.id}</td>
               <td>{row.fileId}</td>
-              <td>{row.created_dt}</td>
+              <td>{row.memberId ?? "Unknown"}</td>
+              <td>{formatDate(row.created_dt)}</td>
               <td>
-                <span className={`status ${getStatusClass(row.status)}`}>
-                  {row.status}
+                <span className={`status ${getStatusClass((row.status))}`}>
+                  {(row.status)}
                 </span>
               </td>
               <td>
-                 <button
+                <button
                   className="check-btn"
                   onClick={() => {
                     navigate('/admin/error-report-detail', {
                       state: {
-                        report: {
-                          id: row.no,
-                          fileId: row.fileId,
-                          name: row.name,
-                          created_dt: row.created_dt,
-                          status: statusMap[row.status] || "NOT_STARTED",
-                          comment: "",
-                          is_deleted: false,
-                        },
+                        report: row,
                       },
                     });
                   }}
