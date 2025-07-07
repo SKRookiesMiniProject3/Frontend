@@ -1,14 +1,13 @@
+// src/App.jsx
 import React from 'react';
-import LoginPage from './components/LoginPage';
+import LoginPage from './pages/LoginPage';
 import DocumentViewer from './pages/DocumentViewer';
+import useAuthStore from './stores/authStore';
 
 const App = () => {
-  return (
-    <div>
-      {/* <LoginPage /> */}
-      <DocumentViewer />
-    </div>
-  );
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
+  return <div>{isLoggedIn ? <DocumentViewer /> : <LoginPage />}</div>;
 };
 
 export default App;

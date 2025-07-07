@@ -1,41 +1,73 @@
 .sidebar {
-  width: 120px;
-  background-color: #f9f9f9;
-  border-right: 1px solid #e0e0e0;
+  width: 200px;
+  background-color: #f8f8f8;
+  height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
+  border-right: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 24px;
-  height: 100vh;
+  gap: 12px;
 }
 
-.menuIcon {
-  font-size: 20px;
-  margin-bottom: 40px;
-  color: #555;
-  cursor: pointer;
-}
-
-.menuList {
-  list-style: none;
-  padding: 0;
-  width: 100%;
+.menuSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .menuItem {
-  padding: 12px 0;
-  text-align: center;
-  cursor: pointer;
+  background: none;
+  border: none;
   font-size: 16px;
-  color: #555;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .menuItem:hover {
-  background-color: #eee;
+  background-color: #eaeaea;
+}
+.menuItem:focus,
+.subItem:focus {
+  outline: none;
+}
+
+.subItem {
+  background: none;
+  border: none;
+  font-size: 15px;
+  text-align: left;
+  padding: 6px 12px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  color: #333;
+}
+
+.subItem:hover {
+  background-color: #ececec;
+  border-left: 3px solid #b39ddb;
 }
 
 .active {
-  font-weight: bold;
-  background-color: #e4d9f4;
-  color: #4a4a9a;
+  background-color: #e1d8f4;
+  font-weight: 600;
+  color: #4a148c;
+}
+
+.categoryLabel {
+  margin-top: 10px;
+  font-size: 23px;
+  font-weight: 600;
+  color: #111;
+  padding-left: 10px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 10px 0;
 }

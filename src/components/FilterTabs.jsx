@@ -1,22 +1,19 @@
-// src/components/FilterTabs.jsx
 import React, { useState } from 'react';
-import styles from './FilterTabs.module.css';
+import styles from './FilterTabs.module.css'; // 스타일 그대로 사용
 
 const FilterTabs = () => {
-  const categories = ['사업계획서', 'R&D', '실적보고서', 'Label'];
-  const [selected, setSelected] = useState('사업계획서');
+  const sortOptions = ['날짜순','이름순'];
+  const [selected, setSelected] = useState('최신순');
 
   return (
     <div className={styles.filterContainer}>
-      {categories.map((category) => (
+      {sortOptions.map((option) => (
         <button
-          key={category}
-          className={`${styles.tab} ${
-            selected === category ? styles.active : ''
-          }`}
-          onClick={() => setSelected(category)}
+          key={option}
+          className={`${styles.tab} ${selected === option ? styles.active : ''}`}
+          onClick={() => setSelected(option)}
         >
-          {category}
+          {option}
         </button>
       ))}
     </div>
