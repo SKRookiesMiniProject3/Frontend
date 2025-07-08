@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './ErrorReportTable.css';
 import errorReportStore from "../../stores/errorReportStore";
+import useAuthStore from "../../../stores/authStore";
+import { fetchLatestErrorReports } from "../../api/errorReports";
 
 const ErrorReportTable = ({ 
   showSeeMore, 
   usePagination = false, 
   currentPage = 1, 
-  itemsPerPage = 5, 
+  itemsPerPage = 7, 
   onPageChange = () => {}, 
   limit, 
   statusFilter = "", 
@@ -17,21 +19,24 @@ const ErrorReportTable = ({
   sortConfig,
   setSortConfig,
 }) => {
-  const reports = errorReportStore((state) => state.reports);
+  const { accessToken } = useAuthStore();
+  const { reports, setReports } = errorReportStore();
   const navigate = useNavigate();
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case '처리':
-        return 'completed';
-      case '진행 중':
-        return 'inprogress';
-      case '미처리':
-        return 'unprocessed';
-      default:
-        return '';
-    }
-  };
+  useEffect(() => {
+    const loadReports = async () => {
+      if (!accessToken) return;
+
+      const data = await fetchLatestErrorReports(accessToken);
+      const mappedData = data.map((r) => ({
+        ...r,
+        created_dt: r.createdAt,
+      }));
+      setReports(mappedData);
+    };
+
+    loadReports();
+  }, [accessToken, setReports]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -84,7 +89,6 @@ const ErrorReportTable = ({
           <div className="status-filter">
             <button onClick={() => onPageChange(1)}>전체</button>
             <button onClick={() => onPageChange(1, "미처리")}>미처리</button>
-            <button onClick={() => onPageChange(1, "진행 중")}>진행 중</button>
             <button onClick={() => onPageChange(1, "처리")}>처리 완료</button>
           </div>
         )}
@@ -92,7 +96,7 @@ const ErrorReportTable = ({
       <table className="error-report-table">
         <thead>
           <tr>
-            {["id", "memberId", "fileId", "created_dt", "status"].map((key) => (
+            {["id", "message", "created_dt", "resolved"].map((key) => (
               <th key={key} onClick={() => handleSort(key)}>
                 {key === "created_dt" ? "Date" : key.charAt(0).toUpperCase() + key.slice(1)}
                 {enableSorting && (
@@ -111,16 +115,11 @@ const ErrorReportTable = ({
         </thead>
         <tbody>
           {paginatedReports.map((row) => (
-            <tr key={`${row.id}-${row.fileId}`}>
+            <tr key={`${row.id}`}>
               <td>{row.id}</td>
-              <td>{row.fileId}</td>
-              <td>{row.memberId ?? "Unknown"}</td>
+              <td>{row.message}</td>
               <td>{formatDate(row.created_dt)}</td>
-              <td>
-                <span className={`status ${getStatusClass((row.status))}`}>
-                  {(row.status)}
-                </span>
-              </td>
+              <td>{row.resolved ? "✅" : "❌"}</td>
               <td>
                 <button
                   className="check-btn"

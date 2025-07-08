@@ -14,26 +14,19 @@ import errorReportStore from '../stores/errorReportStore';
 
 const AdminDashboard = () => {
   const { users, setUsers } = useUserStore();
-  const { setReports } = errorReportStore();
   const [mode, setMode] = useState("대시보드");
-  const { totalCount, weeklyCount, unprocessedCount, setTotalCount, setWeeklyCount, setUnprocessedCount } = errorReportStore();
-  const [weeklyReportCounts, setWeeklyReportCounts] = useState([0, 0, 0, 0]);
 
   const [showMenu, setShowMenu] = useState(false);
   const { accessToken, logout } = useAuthStore();
   const navigate = useNavigate();
+  const { reports } = errorReportStore();
 
-  const fetchErrorReports = async () => {
-    //더미 데이터
-    return [
-      { created_dt: "2024-07-01", report_status: "NOT_STARTED" },
-      { created_dt: "2024-07-03", report_status: "COMPLETED" },
-      { created_dt: "2024-07-10", report_status: "NOT_STARTED" },
-      { created_dt: "2024-07-15", report_status: "COMPLETED" },
-    ];
-  };
+  const [totalCount, setTotalCount] = useState(0);
+  const [weeklyCount, setWeeklyCount] = useState(0);
+  const [unprocessedCount, setUnprocessedCount] = useState(0);
+  const [weeklyReportCounts, setWeeklyReportCounts] = useState([0, 0, 0, 0]);
 
-    //주간 에러 리포트 수 처리 로직
+  //주간 에러 리포트 수 처리 로직
   const isThisWeek = (dateString) => {
     const now = new Date();
     const todayDay = now.getDay();
@@ -76,36 +69,6 @@ const AdminDashboard = () => {
         }));
         setUsers(formatted);
 
-        const reports = await fetchErrorReports();
-        setReports(reports.map((r) => ({
-          id: r.id,
-          fileId: r.report_file_id,
-          memberId: r.error_source_member,
-          status: r.report_status,
-          created_dt: r.created_dt,
-        })));
-
-        // 총합
-        setTotalCount(reports.length);
-
-        // 주간 리포트 수
-        const weeklyCount = reports.filter(r => isThisWeek(r.created_dt)).length;
-        setWeeklyCount(weeklyCount);
-
-        // 미처리 리포트 수
-        const unprocessedCount = reports.filter(r => r.report_status === 'NOT_STARTED').length;
-        setUnprocessedCount(unprocessedCount);
-
-        // 주차별 분포
-        const weekCounts = [0, 0, 0, 0];
-        reports.forEach(r => {
-          const week = getWeekOfMonth(r.created_dt);
-          if (week >= 1 && week <= 4) {
-            weekCounts[week - 1]++;
-          }
-        });
-        setWeeklyReportCounts(weekCounts);
-
       } catch (error) {
         console.error("대시보드 데이터 로딩 실패:", error);
       }
@@ -113,6 +76,26 @@ const AdminDashboard = () => {
 
     loadDashboardData();
   }, []);
+
+  useEffect(() => {
+  const calcStats = () => {
+    const total = reports.length;
+    const weekly = reports.filter(r => isThisWeek(r.created_dt)).length;
+    const unprocessed = reports.filter(r => !r.resolved).length;
+    const weekCounts = [0, 0, 0, 0];
+    reports.forEach(r => {
+      const w = getWeekOfMonth(r.created_dt);
+      if (w >= 1 && w <= 4) weekCounts[w - 1]++;
+    });
+
+    setTotalCount(total);
+    setWeeklyCount(weekly);
+    setUnprocessedCount(unprocessed);
+    setWeeklyReportCounts(weekCounts);
+  };
+
+  calcStats();
+}, [reports]);
 
   const handleLogout = () => {
     logout();

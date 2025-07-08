@@ -9,6 +9,7 @@ const errorReportStore = create((set, get) => ({
 
   setReports: (reportList) => set({ reports: reportList }),
   setSelectedReport: (report) => set({ selectedReport: report }),
+  
   setTotalCount: (count) => set({ totalCount: count }),
   setWeeklyCount: (count) => set({ weeklyCount: count }),
   setUnprocessedCount: (count) => set({ unprocessedCount: count }),

@@ -4,7 +4,7 @@ import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 import "../styles/ErrorReportDetail.css";
 import errorReportStore from "../stores/errorReportStore";
-import { updateErrorReport } from "../api/errorReports";
+//import { updateErrorReport } from "../api/errorReports";
 
 //Fallback 기본값
 const fallbackReport = {
@@ -18,7 +18,8 @@ const fallbackReport = {
 };
 
 const ErrorReportDetail = () => {
-  const { selectedReport, setSelectedReport, updateReportById } = errorReportStore();
+  //const { selectedReport, setSelectedReport, updateReportById } = errorReportStore();
+  const { selectedReport, setSelectedReport } = errorReportStore();
   const location = useLocation();
   const passedReport = location.state?.report;
 
@@ -36,16 +37,16 @@ const ErrorReportDetail = () => {
     setComment(report.comment || "");
   }, [report.id]);
 
-  const handleSave = async () => {
-    try {
-      await updateErrorReport(report.id, status, comment);
-      updateReportById(report.id, { status, comment });
-      alert("에러 리포트가 저장되었습니다.");
-    } catch (err) {
-      console.error(err);
-      alert("저장 실패");
-    }
-  };
+  // const handleSave = async () => {
+  //   try {
+  //     await updateErrorReport(report.id, status, comment);
+  //     updateReportById(report.id, { status, comment });
+  //     alert("에러 리포트가 저장되었습니다.");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("저장 실패");
+  //   }
+  // };
 
   const handleDownload = async () => {
     try {
@@ -109,9 +110,9 @@ const ErrorReportDetail = () => {
               <button className="download-btn" onClick={handleDownload}>
                 리포트 다운로드
               </button>
-              <button className="save-btn" onClick={handleSave}>
+              {/* <button className="save-btn" onClick={handleSave}>
                 저장
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

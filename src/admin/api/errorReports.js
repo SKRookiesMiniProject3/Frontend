@@ -2,34 +2,54 @@ import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// 에러 리포트 목록 조회
-export const fetchErrorReports = async (token) => {
+//최신 에러 리포트 조회
+export const fetchLatestErrorReports = async (token) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/v1/error-reports`, {
-      headers: { Authorization: `Bearer ${token}` }
+    const response = await axios.get(`${BASE_URL}/errors/latest`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data.data.reports;
+    return response.data;
   } catch (error) {
-    console.error("에러 리포트 목록 조회 실패:", error);
+    console.error("최신 에러 리포트 조회 실패:", error);
     return [];
   }
 };
 
-//에러 리포트 개별 수정
-export const updateErrorReport = async (token, id, status, comment) => {
+//미해결 에러 리포트 조회
+export const fetchUnresolvedErrorReports = async (token) => {
   try {
-    const response = await axios.patch(`${BASE_URL}/api/v1/error-reports/${id}`, 
-      {
-        report_status: status,
-        report_comment: comment,
-      }, 
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const response = await axios.get(`${BASE_URL}/errors/unresolved`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response.data;
   } catch (error) {
-    console.error(`에러 리포트 수정 실패 (ID: ${id}):`, error);
-    throw error;
+    console.error("미해결 에러 리포트 조회 실패:", error);
+    return [];
   }
 };
+
+//일별 에러 리포트 개수 조회
+export const fetchDailyErrorCounts = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/errors/daily-count`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("일별 에러 개수 조회 실패:", error);
+    return [];
+  }
+};
+
+//에러 리포트 등록
+// export const createErrorReport = async (token, errorReport) => {
+//   try {
+//     const response = await axios.post(`${BASE_URL}/errors`, errorReport, {
+//       headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("에러 리포트 등록 실패:", error);
+//     throw error;
+//   }
+// };
