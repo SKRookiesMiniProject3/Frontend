@@ -1,21 +1,24 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './MemberListTable.css';
+import useUserStore from '../../stores/userStore';
 
 const MemberListTable = ({
-  members = [],
   limit = null,
   showSeeMore = true,
   showCheck = true,
-  onCheck,
   usePagination = false,
   currentPage = 1,
   itemsPerPage = 7,
   searchTerm = "",
   onPageChange = () => {},
+  enableSorting = true,
+  sortConfig,
+  setSortConfig,
 }) => {
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const users = useUserStore((state) => state.users);
+  const setUsers = useUserStore((state) => state.setUsers);
   const navigate = useNavigate();
 
   //직급 순서
@@ -34,12 +37,12 @@ const MemberListTable = ({
   };
 
   //검색 필터 적용
-  const filtered = members.filter((m) =>
+  const filtered = users.filter((m) =>
     m.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   //정렬
-  const sortedMembers = [...filtered].sort((a, b) => {
+  const sortedMembers = enableSorting ? [...filtered].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
     if (sortConfig.key === "role") {
@@ -55,7 +58,8 @@ const MemberListTable = ({
     if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
     if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
     return 0;
-  });
+  })
+: filtered;
 
   // limit, pagination 병행 처리
   const limited = limit ? sortedMembers.slice(0, limit) : sortedMembers;
@@ -66,13 +70,20 @@ const MemberListTable = ({
   const totalPages = Math.ceil(limited.length / itemsPerPage);
 
   const handleSort = (key) => {
+    if (!enableSorting) return;
     setSortConfig((prev) => ({
       key,
       direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
     }));
   };
 
-  //메인 대시보드(회원 5명만)
+  const handleCheck = (id, checked) => {
+    const updated = users.map((m) =>
+      m.id === id ? { ...m, checked } : m
+    );
+    setUsers(updated);
+  };
+
   return (
     <div className="member-list-container">
       <div className="table-header">
@@ -91,63 +102,75 @@ const MemberListTable = ({
           <tr>
             <th onClick={() => handleSort("id")}>
               ID
-              <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
-                {sortConfig.key === "id"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "id"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("name")}>
               Name
-              <span className={`sort-indicator ${sortConfig.key === "name" ? "sorted" : ""}`}>
-                {sortConfig.key === "name"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "name" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "name"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("email")}>
               Email
-              <span className={`sort-indicator ${sortConfig.key === "email" ? "sorted" : ""}`}>
-                {sortConfig.key === "email"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "email" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "email"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("phone")}>
               Phone
-              <span className={`sort-indicator ${sortConfig.key === "phone" ? "sorted" : ""}`}>
-                {sortConfig.key === "phone"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "phone" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "phone"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("date")}>
               Date
-              <span className={`sort-indicator ${sortConfig.key === "date" ? "sorted" : ""}`}>
-                {sortConfig.key === "date"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "date" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "date"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("role")}>
               Role
-              <span className={`sort-indicator ${sortConfig.key === "role" ? "sorted" : ""}`}>
-                {sortConfig.key === "role"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "role" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "role"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th>직급 설명</th>
           </tr>
@@ -160,7 +183,7 @@ const MemberListTable = ({
                   <input
                     type="checkbox"
                     checked={m.checked || false}
-                    onChange={(e) => onCheck(m.id, e.target.checked)}
+                    onChange={(e) => handleCheck(m.id, e.target.checked)}
                   />
                 )}
                 {m.id}

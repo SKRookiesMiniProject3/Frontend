@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FilterTabs from '../components/FilterTabs';
@@ -8,6 +9,7 @@ import Pagination from '../components/Pagination';
 import { fetchDocuments } from '../api/documents';
 import { categoryNameToId } from '../constants/categoryMap';
 import './DocumentViewer.css';
+import useAuthStore from "../stores/authStore";
 
 const modeMap = {
   "열람": "view",
@@ -20,6 +22,12 @@ const DocumentViewer = () => {
   const [activeMode, setActiveMode] = useState("열람");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [showUploadModal, setShowUploadModal] = useState(false);
+
+  const [showMenu, setShowMenu] = useState(false);
+  const { logout, user } = useAuthStore();
+  console.log(user?.role);
+  const navigate = useNavigate();
+
   const [currentPage, setCurrentPage] = useState(1);
   const documentsPerPage = 8;
 
@@ -75,9 +83,24 @@ const DocumentViewer = () => {
     setCurrentPage(page);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleAdminPage = () => {
+    if (user?.role === "[CEO]") {
+      navigate("/admin");
+    } else {
+      alert("관리자만 접근할 수 있습니다.");
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="viewer-container">
       <Header />
+
       <div className="main-content">
         <Sidebar
           activeMain={activeMode}
@@ -111,6 +134,16 @@ const DocumentViewer = () => {
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
+        </div>
+        {/* 로그아웃, 관리자 페이지 이동 */}
+        <div className="content-toolbar">
+          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
+          {showMenu && (
+            <div className="dropdown-menu">
+              <button onClick={handleAdminPage}>관리자 페이지</button>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
+          )}
         </div>
       </div>
 

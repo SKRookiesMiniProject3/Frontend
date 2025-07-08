@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../../../components/Header.module.css';
 import logoImage from '../../../assets/log2doc.png';
+import rookieslogo from '../../../assets/rookieslogo.png';
 
 const Header = () => {
   return (
@@ -10,7 +11,7 @@ const Header = () => {
         <span className={styles.welcomeText}>이도건 관리자님, 환영합니다!</span>
       </div>
       <div className={styles.rightSection}>
-        <div className={styles.profileCircle}>이</div>
+        <img src={rookieslogo} alt="logo" className={styles.rookieslogo} />
       </div>
     </header>
   );
