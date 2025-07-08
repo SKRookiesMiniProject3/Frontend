@@ -37,7 +37,6 @@ const DocumentViewer = () => {
     currentPage * documentsPerPage
   );
 
-  // ✅ 문서 불러오기 함수 분리
   const loadDocs = async () => {
     try {
       const categoryTypeId = categoryNameToId[selectedCategory];
@@ -89,7 +88,7 @@ const DocumentViewer = () => {
   };
 
   const handleAdminPage = () => {
-    if (user?.role === "[CEO]") {
+    if (user?.role === "CEO") {
       navigate("/admin");
     } else {
       alert("관리자만 접근할 수 있습니다.");
