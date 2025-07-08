@@ -6,22 +6,21 @@ import FilterTabs from '../components/FilterTabs';
 import DocumentGrid from '../components/DocumentGrid';
 import UploadModal from '../components/UploadModal';
 import Pagination from '../components/Pagination';
+import { fetchDocuments } from '../api/documents';
+import { categoryNameToId } from '../constants/categoryMap';
 import './DocumentViewer.css';
 import useAuthStore from "../stores/authStore";
 
-const dummyDocuments = [
-  { id: 1, title: 'R&D 계획서', date: '2024-06-01', locked: false },
-  { id: 2, title: '재무 계획서', date: '2024-06-02', locked: true },
-  { id: 3, title: '인사 평가 기준', date: '2024-06-03', locked: true },
-  { id: 4, title: '제품 소개서', date: '2024-06-04', locked: false },
-  { id: 5, title: '기술 로드맵', date: '2024-06-05', locked: true },
-  { id: 6, title: '위기 대응 매뉴얼', date: '2024-06-06', locked: true },
-  { id: 7, title: '고객 응대 매뉴얼', date: '2024-06-07', locked: false },
-  { id: 8, title: '법률 문서', date: '2024-06-08', locked: true },
-];
+const modeMap = {
+  "열람": "view",
+  "수정": "edit",
+  "등록": "upload"
+};
 
 const DocumentViewer = () => {
+  const [documents, setDocuments] = useState([]);
   const [activeMode, setActiveMode] = useState("열람");
+  const [selectedCategory, setSelectedCategory] = useState("전체");
   const [showUploadModal, setShowUploadModal] = useState(false);
 
   const [showMenu, setShowMenu] = useState(false);
@@ -30,16 +29,35 @@ const DocumentViewer = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const documentsPerPage = 4;
+  const documentsPerPage = 8;
 
-  const totalPages = Math.ceil(dummyDocuments.length / documentsPerPage);
-
-  const paginatedDocs = dummyDocuments.slice(
+  const totalPages = Math.ceil(documents.length / documentsPerPage);
+  const paginatedDocs = documents.slice(
     (currentPage - 1) * documentsPerPage,
     currentPage * documentsPerPage
   );
 
-  // 등록 모드일 경우 모달 열기
+  // ✅ 문서 불러오기 함수 분리
+  const loadDocs = async () => {
+    try {
+      const categoryTypeId = categoryNameToId[selectedCategory];
+      const result = await fetchDocuments({ categoryTypeId });
+      console.log("📄 불러온 문서 리스트:", result);
+      setDocuments(result);
+    } catch (err) {
+      console.error("문서 목록 불러오기 실패:", err);
+    }
+  };
+
+  // ✅ 선택된 카테고리가 변경될 때 문서 불러오기
+  useEffect(() => {
+    loadDocs();
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
   useEffect(() => {
     if (activeMode === "등록") {
       setShowUploadModal(true);
@@ -53,10 +71,12 @@ const DocumentViewer = () => {
     setActiveMode("열람");
   };
 
-  const handleUpload = ({ title, file }) => {
-    console.log("업로드된 문서:", title, file);
+  const handleUpload = ({ title, file, category }) => {
+    console.log("업로드된 문서:", title, file, category);
     setShowUploadModal(false);
     setActiveMode("열람");
+    setSelectedCategory("전체");
+    loadDocs(); // 업로드 후 새로고침
   };
 
   const handlePageChange = (page) => {
@@ -82,10 +102,33 @@ const DocumentViewer = () => {
       <Header />
 
       <div className="main-content">
-        <Sidebar selectedMode={activeMode} onSelectMode={setActiveMode} />
+        <Sidebar
+          activeMain={activeMode}
+          onSelectMain={setActiveMode}
+          activeCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+
         <div className="content-area">
-          <FilterTabs />
-          <DocumentGrid documents={paginatedDocs} />
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <FilterTabs />
+
+  {/* 🔄 새로고침 버튼 */}
+  <button
+    onClick={loadDocs}
+    className="refresh-btn"
+    title="문서 새로고침"
+  >
+    🔄
+  </button>
+</div>
+
+
+          <DocumentGrid
+            documents={paginatedDocs}
+            mode={modeMap[activeMode] || "view"}
+          />
+
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

@@ -15,20 +15,29 @@ const LoginPage = () => {
   const handleLogin = async () => {
   try {
     const result = await loginUser(username, password);
+
     const accessToken = result.token;
+    const usernameFromApi = result.username;
+    const roleFromApi = result.role;
+
     if (!accessToken) {
       throw new Error("accessToken이 없습니다.");
     }
 
-    login(accessToken, result); 
-    console.log(" 로그인 성공 - 저장된 토큰:", accessToken);
-    console.log(" localStorage 저장됨:", localStorage.getItem("accessToken"));
-    console.log(" 로그인한 사용자 정보:", result);
+    login({
+      token: accessToken,
+      username: usernameFromApi,
+      role: roleFromApi,
+    });
+
+    console.log("로그인 성공 - 저장된 토큰:", accessToken);
+    console.log("localStorage 저장됨:", localStorage.getItem("accessToken"));
   } catch (err) {
     console.error("로그인 실패:", err);
     setError(err.message || "로그인 실패");
   }
 };
+
 
   return (
     <div className={styles.loginContainer}>
