@@ -1,81 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import ErrorReportTable from "../components/report/ErrorReportTable";
 import ReportTrendChart from "../components/report/ReportTrendChart";
 import "../styles/ErrorReportList.css";
+import useAuthStore from "../../stores/authStore";
+import { fetchDailyErrorCounts } from "../api/errorReports";
 
 const ErrorReportList = () => {
+  const { accessToken } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const [statusFilter, setStatusFilter] = useState("");
   const [period, setPeriod] = useState("7");
+  const [mode, setMode] = useState("리포트 관리");
 
-  const reports = [
-    { no: 1, name: '이도건', fileId: 121, created_dt: '🗓️ 2025.06.12', status: '처리' },
-    { no: 2, name: '이도건', fileId: 15, created_dt: '🗓️ 2025.07.06', status: '진행 중' },
-    { no: 3, name: '이도건', fileId: 5, created_dt: '🗓️ 2025.07.02', status: '처리' },
-    { no: 4, name: '이도건', fileId: 11, created_dt: '🗓️ 2025.07.02', status: '미처리' },
-    { no: 5, name: '이도건', fileId: 1, created_dt: '🗓️ 2025.06.25', status: '진행 중' },
-    { no: 6, name: '이도건', fileId: 74, created_dt: '🗓️ 2025.07.04', status: '미처리' },
-    { no: 7, name: '이도건', fileId: 2, created_dt: '🗓️ 2025.07.05', status: '미처리' },
-  ];
+  const [showMenu, setShowMenu] = useState(false);
+  const { logout } = useAuthStore();
+  const navigate = useNavigate();
 
-  // 날짜 필터 로직
-  const today = new Date();
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  const filteredData = reports
-    .filter(r => {
-      const dateStr = r.created_dt.replace("🗓️ ", "");
-      const reportDate = new Date(dateStr);
-      if (period === "7") return today - reportDate <= 7 * 24 * 60 * 60 * 1000;
-      if (period === "30") return today - reportDate <= 30 * 24 * 60 * 60 * 1000;
-      return true;
-    })
-    .reduce((acc, r) => {
-      const date = r.created_dt.replace("🗓️ ", "");
-      acc[date] = (acc[date] || 0) + 1;
-      return acc;
-    }, {});
+  const [chartData, setChartData] = useState([]);
 
-  const chartData = Object.entries(filteredData)
-    .map(([date, count]) => ({ date, count }))
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  useEffect(() => {
+    const loadChartData = async () => {
+      try {
+        const raw = await fetchDailyErrorCounts(accessToken);
+        const formatted = raw
+          .map((d) => ({
+            date: d.date.replace(/-/g, "."), // 예: 2025-07-08 → 2025.07.08
+            count: d.count,
+          }))
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        setChartData(formatted);
+      } catch (error) {
+        console.error("일별 에러 리포트 차트 데이터 불러오기 실패:", error);
+      }
+    };
+
+    if (accessToken) loadChartData();
+  }, [accessToken]);
+
+  const resolvedFilterOptions = {
+    true: "처리",
+    false: "미처리",
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleMainPage = () => {
+    navigate("/");
+  };
+
+  //새로 고침 버튼과 연동
+  const handleReset = () => {
+    setCurrentPage(1);
+    setSortConfig({ key: null, direction: "asc" });
+    setStatusFilter("");
+    setPeriod("7");
+  };
 
   return (
     <div className="viewer-container">
       <Header />
       <div className="main-content">
-        <Sidebar active="리포트 관리" />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} />
         <div className="content-area">
           <h2 className="page-title">에러 리포트 관리</h2>
 
           {/* 상태 필터 버튼 */}
           <div className="status-filter-container">
-            <button
-              className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`}
-              onClick={() => setStatusFilter("")}
-            >
+            <button className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`} onClick={() => setStatusFilter("")}>
               전체
             </button>
-            <button
-              className={`status-filter-btn ${statusFilter === "미처리" ? "active" : ""}`}
-              onClick={() => setStatusFilter("미처리")}
-            >
-              미처리
-            </button>
-            <button
-              className={`status-filter-btn ${statusFilter === "진행 중" ? "active" : ""}`}
-              onClick={() => setStatusFilter("진행 중")}
-            >
-              진행 중
-            </button>
-            <button
-              className={`status-filter-btn ${statusFilter === "처리" ? "active" : ""}`}
-              onClick={() => setStatusFilter("처리")}
-            >
-              처리
-            </button>
+            {Object.entries(resolvedFilterOptions).map(([key, label]) => (
+              <button
+                key={key}
+                className={`status-filter-btn ${statusFilter === key ? "active" : ""}`}
+                onClick={() => setStatusFilter(key)}
+              >
+                {label}
+              </button>
+            ))}
+            {/* 새로고침 버튼 추가 */}
+            <div className="reset-button-container">
+              <button className="reset-btn" onClick={handleReset}>🔄 새로고침</button>
+            </div>
           </div>
 
           <ErrorReportTable
@@ -85,6 +100,8 @@ const ErrorReportList = () => {
             itemsPerPage={itemsPerPage}
             onPageChange={setCurrentPage}
             statusFilter={statusFilter}
+            sortConfig={sortConfig}
+            setSortConfig={setSortConfig}
           />
 
           {/* 차트 필터 */}
@@ -98,11 +115,8 @@ const ErrorReportList = () => {
             <button
               className={`filter-btn ${period === "30" ? "active" : ""}`}
               onClick={() => {
-  console.log("period 바뀌기 전:", period);
-  setPeriod("30");
-
-  console.log("period 바뀐 후:", period);
-}}
+              setPeriod("30");
+            }}
             >
               최근 30일
             </button>
@@ -114,7 +128,16 @@ const ErrorReportList = () => {
             </button>
           </div>
 
-
+          {/* 로그아웃, 메인 페이지 이동 */}
+          <div className="content-toolbar">
+          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
+          {showMenu && (
+            <div className="dropdown-menu">
+              <button onClick={handleMainPage}>메인 페이지</button>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
+          )}
+          </div>
           {/* 차트 */}
           <div className="chart-container">
             <h3>에러 리포트 일별 합계</h3>

@@ -5,8 +5,8 @@ const ReportTrendChart = ({ data }) => (
     <BarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis allowDecimals={false} />
-      <Tooltip />
+      <YAxis allowDecimals={false} domain={[0, "dataMax + 1"]} />
+      <Tooltip formatter={(value) => `${value}건`} />
       <Bar dataKey="count" fill="#6366f1" />
     </BarChart>
   </ResponsiveContainer>
