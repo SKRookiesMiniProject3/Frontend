@@ -42,7 +42,7 @@ const MemberListTable = ({
   );
 
   //정렬
-  const sortedMembers = [...filtered].sort((a, b) => {
+  const sortedMembers = enableSorting ? [...filtered].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
     if (sortConfig.key === "role") {
@@ -58,7 +58,8 @@ const MemberListTable = ({
     if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
     if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
     return 0;
-  });
+  })
+: filtered;
 
   // limit, pagination 병행 처리
   const limited = limit ? sortedMembers.slice(0, limit) : sortedMembers;

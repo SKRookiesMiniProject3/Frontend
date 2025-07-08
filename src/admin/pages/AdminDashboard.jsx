@@ -27,9 +27,9 @@ const AdminDashboard = () => {
     //더미 데이터
     return [
       { created_dt: "2024-07-01", report_status: "NOT_STARTED" },
-      { created_dt: "2024-07-03", report_status: "DONE" },
+      { created_dt: "2024-07-03", report_status: "COMPLETED" },
       { created_dt: "2024-07-10", report_status: "NOT_STARTED" },
-      { created_dt: "2024-07-15", report_status: "DONE" },
+      { created_dt: "2024-07-15", report_status: "COMPLETED" },
     ];
   };
 

@@ -66,6 +66,8 @@ const ErrorReportList = () => {
   const handleReset = () => {
     setCurrentPage(1);
     setSortConfig({ key: null, direction: "asc" });
+    setStatusFilter("");
+    setPeriod("7");
   };
 
   return (
