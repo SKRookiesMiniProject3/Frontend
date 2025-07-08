@@ -4,8 +4,9 @@ import styles from './DocumentCard.module.css';
 
 const DocumentCard = ({ fileName, createdAt, locked }) => {
   const formatDate = (dateString) => {
+    if (!dateString) return "";
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR'); 
+    return date.toLocaleDateString('ko-KR');
   };
 
   return (

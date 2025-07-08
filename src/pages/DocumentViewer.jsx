@@ -6,17 +6,8 @@ import DocumentGrid from '../components/DocumentGrid';
 import UploadModal from '../components/UploadModal';
 import Pagination from '../components/Pagination';
 import { fetchDocuments } from '../api/documents';
+import { categoryNameToId } from '../constants/categoryMap';
 import './DocumentViewer.css';
-
-// 프론트 카테고리명 → 백엔드 categoryTypeId 매핑
-const categoryMap = {
-  "전체": null,
-  "사업계획서": 1,
-  "R&D 계획서": 2,
-  "실적보고서": 3,
-  "재무계획서": 4,
-  "제품소개서": 5
-};
 
 const modeMap = {
   "열람": "view",
@@ -38,18 +29,20 @@ const DocumentViewer = () => {
     currentPage * documentsPerPage
   );
 
-  // 🔁 문서 불러오기
-  useEffect(() => {
-    const loadDocs = async () => {
-      try {
-        const categoryTypeId = categoryMap[selectedCategory];
-        const result = await fetchDocuments({ categoryTypeId });
-        setDocuments(result);
-      } catch (err) {
-        console.error("문서 목록 불러오기 실패:", err);
-      }
-    };
+  // ✅ 문서 불러오기 함수 분리
+  const loadDocs = async () => {
+    try {
+      const categoryTypeId = categoryNameToId[selectedCategory];
+      const result = await fetchDocuments({ categoryTypeId });
+      console.log("📄 불러온 문서 리스트:", result);
+      setDocuments(result);
+    } catch (err) {
+      console.error("문서 목록 불러오기 실패:", err);
+    }
+  };
 
+  // ✅ 선택된 카테고리가 변경될 때 문서 불러오기
+  useEffect(() => {
     loadDocs();
   }, [selectedCategory]);
 
@@ -75,6 +68,7 @@ const DocumentViewer = () => {
     setShowUploadModal(false);
     setActiveMode("열람");
     setSelectedCategory("전체");
+    loadDocs(); // 업로드 후 새로고침
   };
 
   const handlePageChange = (page) => {
@@ -93,7 +87,19 @@ const DocumentViewer = () => {
         />
 
         <div className="content-area">
-          <FilterTabs />
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <FilterTabs />
+
+  {/* 🔄 새로고침 버튼 */}
+  <button
+    onClick={loadDocs}
+    className="refresh-btn"
+    title="문서 새로고침"
+  >
+    🔄
+  </button>
+</div>
+
 
           <DocumentGrid
             documents={paginatedDocs}

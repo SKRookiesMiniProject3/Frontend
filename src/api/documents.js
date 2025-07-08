@@ -58,3 +58,14 @@ export const fetchDocuments = async ({ categoryTypeId, startDate, endDate } = {}
 
   return response.data;
 };
+
+//문서 상태 체크(권한 체크)
+export const checkDocumentStatus = async (id) => {
+  const token = localStorage.getItem("accessToken");
+  const response = await axios.get(`${BASE_URL}/documents/${id}/status`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
