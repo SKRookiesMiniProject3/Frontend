@@ -141,7 +141,7 @@ const AdminDashboard = () => {
           <div className="report-chart-wrapper">
             {/* 에러 리포트 테이블 */}
             <div className="report-table-container">
-              <ErrorReportTable showSeeMore={true} limit={7} enableStatusFilter={false}/>
+              <ErrorReportTable showSeeMore={true} limit={7} enableStatusFilter={false} enableSorting={false}/>
             </div>
             {/* 주간 에러 리포트 합계 차트 */}
             <div className="weekly-chart-container">
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
             </div>
           </div>
           {/* 회원 리스트 테이블 */}
-          <MemberListTable members={users} limit={5} showCheck={false} />
+          <MemberListTable members={users} limit={5} showCheck={false} enableSorting={false}/>
         </div>
 
         {/* 로그아웃, 메인 페이지 이동 */}

@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './MemberListTable.css';
@@ -13,11 +13,12 @@ const MemberListTable = ({
   itemsPerPage = 7,
   searchTerm = "",
   onPageChange = () => {},
+  enableSorting = true,
+  sortConfig,
+  setSortConfig,
 }) => {
   const users = useUserStore((state) => state.users);
   const setUsers = useUserStore((state) => state.setUsers);
-
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const navigate = useNavigate();
 
   //직급 순서
@@ -68,6 +69,7 @@ const MemberListTable = ({
   const totalPages = Math.ceil(limited.length / itemsPerPage);
 
   const handleSort = (key) => {
+    if (!enableSorting) return;
     setSortConfig((prev) => ({
       key,
       direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
@@ -99,63 +101,75 @@ const MemberListTable = ({
           <tr>
             <th onClick={() => handleSort("id")}>
               ID
-              <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
-                {sortConfig.key === "id"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "id"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("name")}>
               Name
-              <span className={`sort-indicator ${sortConfig.key === "name" ? "sorted" : ""}`}>
-                {sortConfig.key === "name"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "name" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "name"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("email")}>
               Email
-              <span className={`sort-indicator ${sortConfig.key === "email" ? "sorted" : ""}`}>
-                {sortConfig.key === "email"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "email" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "email"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("phone")}>
               Phone
-              <span className={`sort-indicator ${sortConfig.key === "phone" ? "sorted" : ""}`}>
-                {sortConfig.key === "phone"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "phone" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "phone"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("date")}>
               Date
-              <span className={`sort-indicator ${sortConfig.key === "date" ? "sorted" : ""}`}>
-                {sortConfig.key === "date"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "date" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "date"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("role")}>
               Role
-              <span className={`sort-indicator ${sortConfig.key === "role" ? "sorted" : ""}`}>
-                {sortConfig.key === "role"
-                  ? sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "role" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "role"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th>직급 설명</th>
           </tr>

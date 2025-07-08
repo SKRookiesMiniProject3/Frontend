@@ -26,6 +26,8 @@ const ErrorReportList = () => {
   const { logout } = useAuthStore();
   const navigate = useNavigate();
 
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
   // 날짜 필터 로직
   const today = new Date();
 
@@ -60,6 +62,12 @@ const ErrorReportList = () => {
     navigate("/");
   };
 
+  //새로 고침 버튼과 연동
+  const handleReset = () => {
+    setCurrentPage(1);
+    setSortConfig({ key: null, direction: "asc" });
+  };
+
   return (
     <div className="viewer-container">
       <Header />
@@ -82,6 +90,10 @@ const ErrorReportList = () => {
                 {label}
               </button>
             ))}
+            {/* 새로고침 버튼 추가 */}
+            <div className="reset-button-container">
+              <button className="reset-btn" onClick={handleReset}>🔄 새로고침</button>
+            </div>
           </div>
 
           <ErrorReportTable
@@ -91,6 +103,8 @@ const ErrorReportList = () => {
             itemsPerPage={itemsPerPage}
             onPageChange={setCurrentPage}
             statusFilter={statusFilter}
+            sortConfig={sortConfig}
+            setSortConfig={setSortConfig}
           />
 
           {/* 차트 필터 */}
@@ -116,6 +130,7 @@ const ErrorReportList = () => {
               전체
             </button>
           </div>
+
           {/* 로그아웃, 메인 페이지 이동 */}
           <div className="content-toolbar">
           <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>

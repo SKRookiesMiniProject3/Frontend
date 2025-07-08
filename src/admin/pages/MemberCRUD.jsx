@@ -22,6 +22,8 @@ const MemberCRUD = () => {
   const { accessToken, logout } = useAuthStore();
   const navigate = useNavigate();
 
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
   useEffect(() => {
     if (!accessToken) return;
 
@@ -42,9 +44,6 @@ const MemberCRUD = () => {
   
   //이름 검색
   const handleSearch = (keyword) => setSearchTerm(keyword);
-
-  //테이블 새로고침
-  const handleReset = () => setSearchTerm("");
 
   //체크박스
   const handleCheck = (id, checked) => {
@@ -77,6 +76,13 @@ const MemberCRUD = () => {
     navigate("/");
   };
 
+  //새로 고침 버튼과 연동
+  const handleReset = () => {
+    setSearchTerm("");
+    setCurrentPage(1);
+    setSortConfig({ key: null, direction: "asc" });
+  };
+
   return (
     <div className="viewer-container">
       <Header />
@@ -102,6 +108,8 @@ const MemberCRUD = () => {
             usePagination={true}
             onCheck={handleCheck}
             onPageChange={setCurrentPage}
+            sortConfig={sortConfig}
+            setSortConfig={setSortConfig}
           />
 
           {selectedMember && (

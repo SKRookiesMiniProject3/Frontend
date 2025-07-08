@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './ErrorReportTable.css';
 import errorReportStore from "../../stores/errorReportStore";
 
-const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1, itemsPerPage = 5, onPageChange = () => {}, limit, statusFilter = "", enableStatusFilter = false,}) => {
+const ErrorReportTable = ({ 
+  showSeeMore, 
+  usePagination = false, 
+  currentPage = 1, 
+  itemsPerPage = 5, 
+  onPageChange = () => {}, 
+  limit, 
+  statusFilter = "", 
+  enableStatusFilter = false,
+  enableSorting = true,
+  sortConfig,
+  setSortConfig,
+}) => {
   const reports = errorReportStore((state) => state.reports);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const navigate = useNavigate();
 
   //에러 리포트 status
@@ -68,6 +79,7 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
   const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
 
   const handleSort = (key) => {
+    if (!enableSorting) return;
     setSortConfig((prev) => ({
       key,
       direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
@@ -97,43 +109,53 @@ const ErrorReportTable = ({ showSeeMore, usePagination = false, currentPage = 1,
           <tr>
             <th onClick={() => handleSort("id")}>
               No
-              <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
-                {sortConfig.key === "id"
-                  ? sortConfig.direction === "asc" ? "▲" : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "id"
+                    ? sortConfig.direction === "asc" ? "▲" : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("memberId")}>
               Member ID
-              <span className={`sort-indicator ${sortConfig.key === "memberId" ? "sorted" : ""}`}>
-                {sortConfig.key === "memberId"
-                  ? sortConfig.direction === "asc" ? "▲" : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "memberId" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "memberId"
+                    ? sortConfig.direction === "asc" ? "▲" : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("fileId")}>
               File ID
-              <span className={`sort-indicator ${sortConfig.key === "fileId" ? "sorted" : ""}`}>
-                {sortConfig.key === "fileId"
-                  ? sortConfig.direction === "asc" ? "▲" : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "fileId" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "fileId"
+                    ? sortConfig.direction === "asc" ? "▲" : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("created_dt")}>
               Date
-              <span className={`sort-indicator ${sortConfig.key === "created_dt" ? "sorted" : ""}`}>
-                {sortConfig.key === "created_dt"
-                  ? sortConfig.direction === "asc" ? "▲" : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "created_dt" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "created_dt"
+                    ? sortConfig.direction === "asc" ? "▲" : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th onClick={() => handleSort("status")}>
               Report Status
-              <span className={`sort-indicator ${sortConfig.key === "status" ? "sorted" : ""}`}>
-                {sortConfig.key === "status"
-                  ? sortConfig.direction === "asc" ? "▲" : "▼"
-                  : "▼"}
-              </span>
+              {enableSorting && (
+                <span className={`sort-indicator ${sortConfig.key === "status" ? "sorted" : ""}`}>
+                  {enableSorting && sortConfig.key === "status"
+                    ? sortConfig.direction === "asc" ? "▲" : "▼"
+                    : "▼"}
+                </span>
+              )}
             </th>
             <th></th>
           </tr>
