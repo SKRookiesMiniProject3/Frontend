@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { fetchUsers } from '../api/users';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
@@ -8,6 +9,7 @@ import StatCard from '../components/ui/StatCard';
 import WeeklyReportChart from '../components/report/WeeklyReportChart';
 import "../styles/AdminDashboard.css";
 import useUserStore from '../stores/userStore';
+import useAuthStore from "../../stores/authStore";
 import errorReportStore from '../stores/errorReportStore';
 
 const AdminDashboard = () => {
@@ -16,6 +18,10 @@ const AdminDashboard = () => {
   const [mode, setMode] = useState("대시보드");
   const { totalCount, weeklyCount, unprocessedCount, setTotalCount, setWeeklyCount, setUnprocessedCount } = errorReportStore();
   const [weeklyReportCounts, setWeeklyReportCounts] = useState([0, 0, 0, 0]);
+
+  const [showMenu, setShowMenu] = useState(false);
+  const { accessToken, logout } = useAuthStore();
+  const navigate = useNavigate();
 
   const fetchErrorReports = async () => {
     //더미 데이터
@@ -56,7 +62,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const users = await fetchUsers();
+        const users = await fetchUsers(accessToken);
         console.log("회원 목록 로드 완료", users);
         const formatted = users.map((u) => ({
           id: u.id,
@@ -108,6 +114,15 @@ const AdminDashboard = () => {
     loadDashboardData();
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleMainPage = () => {
+    navigate("/");
+  };
+
   return (
     <div className="viewer-container">
       <Header />
@@ -135,6 +150,17 @@ const AdminDashboard = () => {
           </div>
           {/* 회원 리스트 테이블 */}
           <MemberListTable members={users} limit={5} showCheck={false} />
+        </div>
+
+        {/* 로그아웃, 메인 페이지 이동 */}
+        <div className="content-toolbar">
+          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
+          {showMenu && (
+            <div className="dropdown-menu">
+              <button onClick={handleMainPage}>메인 페이지</button>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
+          )}
         </div>
       </div>
     </div>

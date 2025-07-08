@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const tempToken = '임의 토큰값';
 
 // 에러 리포트 목록 조회
-export const fetchErrorReports = async () => {
+export const fetchErrorReports = async (token) => {
   try {
     const response = await axios.get(`${BASE_URL}/api/v1/error-reports`, {
-      headers: { Authorization: `Bearer ${tempToken}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
     return response.data.data.reports;
   } catch (error) {
@@ -17,7 +16,7 @@ export const fetchErrorReports = async () => {
 };
 
 //에러 리포트 개별 수정
-export const updateErrorReport = async (id, status, comment) => {
+export const updateErrorReport = async (token, id, status, comment) => {
   try {
     const response = await axios.patch(`${BASE_URL}/api/v1/error-reports/${id}`, 
       {
@@ -25,7 +24,7 @@ export const updateErrorReport = async (id, status, comment) => {
         report_comment: comment,
       }, 
       {
-        headers: { Authorization: `Bearer ${tempToken}` },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
     return response.data;

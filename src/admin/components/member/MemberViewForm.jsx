@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import "./MemberViewForm.css";
 import { fetchUserById } from "../../api/users";
 import useUserStore from "../../stores/userStore";
+import useAuthStore from "../../../stores/authStore";
 
 const MemberViewForm = ({ memberId, onClose }) => {
   const [detail, setDetail] = useState(null);
   const setSelectedUser = useUserStore((state) => state.setSelectedUser);
+  const { accessToken } = useAuthStore();
 
   useEffect(() => {
     const loadUser = async () => {
-      const user = await fetchUserById(memberId);
+      const user = await fetchUserById(memberId, accessToken);
       if (user) {
         const formatted = {
           id: user.id,
@@ -27,7 +29,7 @@ const MemberViewForm = ({ memberId, onClose }) => {
     };
 
     loadUser();
-  }, [memberId, setSelectedUser]);
+  }, [memberId, accessToken, setSelectedUser]);
 
   if (!detail) {
     return (

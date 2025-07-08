@@ -1,4 +1,5 @@
 import React, { useState, useEffect }  from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchUsers } from '../api/users';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
@@ -6,6 +7,7 @@ import MemberListTable from '../components/member/MemberListTable';
 import MemberListToolbar from '../components/member/MemberListToolbar';
 import MemberViewForm from "../components/member/MemberViewForm";
 import useUserStore from '../stores/userStore';
+import useAuthStore from "../../stores/authStore";
 
 const MemberCRUD = () => {
   const users = useUserStore((state) => state.users);
@@ -16,8 +18,14 @@ const MemberCRUD = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [mode, setMode] = useState("회원관리");
 
+  const [showMenu, setShowMenu] = useState(false);
+  const { accessToken, logout } = useAuthStore();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchUsers().then((fetchedUsers) => {
+    if (!accessToken) return;
+
+    fetchUsers(accessToken).then((fetchedUsers) => {
       const formatted = fetchedUsers.map((u) => ({
         id: u.id,
         name: u.username,
@@ -60,6 +68,15 @@ const MemberCRUD = () => {
     console.log("setSelectedMember:", checked[0]);
   };
 
+    const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleMainPage = () => {
+    navigate("/");
+  };
+
   return (
     <div className="viewer-container">
       <Header />
@@ -92,6 +109,16 @@ const MemberCRUD = () => {
               memberId={selectedMember.id}
               onClose={() => setSelectedMember(null)}
             />
+          )}
+        </div>
+        {/* 로그아웃, 메인 페이지 이동 */}
+        <div className="content-toolbar">
+          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
+          {showMenu && (
+            <div className="dropdown-menu">
+              <button onClick={handleMainPage}>메인 페이지</button>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
           )}
         </div>
       </div>

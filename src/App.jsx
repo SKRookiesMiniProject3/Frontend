@@ -1,60 +1,42 @@
-import { Routes, Route } from 'react-router-dom';
+// src/App.jsx
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DocumentViewer from './pages/DocumentViewer';
 import AdminDashboard from './admin/pages/AdminDashboard';
 import MemberCRUD from './admin/pages/MemberCRUD';
-import ErrorReportDetail from './admin/pages/ErrorReportDetail';
 import ErrorReportList from './admin/pages/ErrorReportList';
+import ErrorReportDetail from './admin/pages/ErrorReportDetail';
 import useAuthStore from './stores/authStore';
 
 const App = () => {
-  const { isLoggedIn, role } = useAuthStore();
-  const DEV_TEST_MODE = import.meta.env.VITE_DEV_TEST_MODE === 'true';
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   return (
     <Routes>
-      <Route path="/" element={isLoggedIn ? <DocumentViewer /> : <LoginPage />} />
-
-      {/* 관리자 페이지 전체 테스트 가능하게 설정 */}
+      <Route
+        path="/"
+        element={isLoggedIn ? <DocumentViewer /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/login"
+        element={!isLoggedIn ? <LoginPage /> : <Navigate to="/" />}
+      />
       <Route
         path="/admin"
-        element={
-          DEV_TEST_MODE || (isLoggedIn && role === 'CEO') ? (
-            <AdminDashboard />
-          ) : (
-            <LoginPage />
-          )
-        }
+        element={isLoggedIn ? <AdminDashboard /> : <Navigate to="/login" />}
       />
       <Route
         path="/admin/member-crud"
-        element={
-          DEV_TEST_MODE || (isLoggedIn && role === 'CEO') ? (
-            <MemberCRUD />
-          ) : (
-            <LoginPage />
-          )
-        }
+        element={isLoggedIn ? <MemberCRUD /> : <Navigate to="/login" />}
       />
       <Route
         path="/admin/error-report"
-        element={
-          DEV_TEST_MODE || (isLoggedIn && role === 'CEO') ? (
-            <ErrorReportList />
-          ) : (
-            <LoginPage />
-          )
-        }
+        element={isLoggedIn ? <ErrorReportList /> : <Navigate to="/login" />}
       />
       <Route
         path="/admin/error-report-detail"
-        element={
-          DEV_TEST_MODE || (isLoggedIn && role === 'CEO') ? (
-            <ErrorReportDetail />
-          ) : (
-            <LoginPage />
-          )
-        }
+        element={isLoggedIn ? <ErrorReportDetail /> : <Navigate to="/login" />}
       />
     </Routes>
   );
