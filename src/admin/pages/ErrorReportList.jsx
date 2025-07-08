@@ -1,21 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import ErrorReportTable from "../components/report/ErrorReportTable";
 import ReportTrendChart from "../components/report/ReportTrendChart";
 import "../styles/ErrorReportList.css";
-import errorReportStore from "../stores/errorReportStore";
 import useAuthStore from "../../stores/authStore";
-
-const statusLabelMap = {
-  NOT_STARTED: "미처리",
-  IN_PROGRESS: "진행 중",
-  COMPLETED: "처리",
-};
+import { fetchDailyErrorCounts } from "../api/errorReports";
 
 const ErrorReportList = () => {
-  const reports = errorReportStore((state) => state.reports);
+  const { accessToken } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const [statusFilter, setStatusFilter] = useState("");
@@ -28,30 +22,31 @@ const ErrorReportList = () => {
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  // 날짜 필터 로직
-  const today = new Date();
+  const [chartData, setChartData] = useState([]);
 
-  const filteredData = reports
-    .filter(r => {
-      const reportDate = new Date(r.created_dt);
-      if (period === "7") return today - reportDate <= 7 * 24 * 60 * 60 * 1000;
-      if (period === "30") return today - reportDate <= 30 * 24 * 60 * 60 * 1000;
-      return true;
-    })
-    .filter(r => {
-      if (!statusFilter) return true;
-      return r.status === statusFilter;
-    })
-    .reduce((acc, r) => {
-      const dateObj = new Date(r.created_dt);
-      const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, "0")}.${String(dateObj.getDate()).padStart(2, "0")}`;
-      acc[dateStr] = (acc[dateStr] || 0) + 1;
-      return acc;
-    }, {});
+  useEffect(() => {
+    const loadChartData = async () => {
+      try {
+        const raw = await fetchDailyErrorCounts(accessToken);
+        const formatted = raw
+          .map((d) => ({
+            date: d.date.replace(/-/g, "."), // 예: 2025-07-08 → 2025.07.08
+            count: d.count,
+          }))
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        setChartData(formatted);
+      } catch (error) {
+        console.error("일별 에러 리포트 차트 데이터 불러오기 실패:", error);
+      }
+    };
 
-  const chartData = Object.entries(filteredData)
-    .map(([date, count]) => ({ date, count }))
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    if (accessToken) loadChartData();
+  }, [accessToken]);
+
+  const resolvedFilterOptions = {
+    true: "처리",
+    false: "미처리",
+  };
 
   const handleLogout = () => {
     logout();
@@ -83,7 +78,7 @@ const ErrorReportList = () => {
             <button className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`} onClick={() => setStatusFilter("")}>
               전체
             </button>
-            {Object.entries(statusLabelMap).map(([key, label]) => (
+            {Object.entries(resolvedFilterOptions).map(([key, label]) => (
               <button
                 key={key}
                 className={`status-filter-btn ${statusFilter === key ? "active" : ""}`}

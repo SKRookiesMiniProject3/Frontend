@@ -45,7 +45,7 @@ const ErrorReportTable = ({
 
   // 에러 리포트 상태 필터링
   const filteredReports = statusFilter
-    ? reports.filter((r) => r.status === statusFilter)
+    ? reports.filter((r) => String(r.resolved) === statusFilter)
     : reports;
 
   //에러 리포트 정렬
