@@ -7,7 +7,7 @@ const Sidebar = ({ activeMain, onSelectMain, activeCategory, onSelectCategory })
     <div className={styles.sidebar}>
       {/* Main 메뉴 */}
       <div className={styles.menuSection}>
-        {["열람", "수정", "등록"].map((menu) => (
+        {["열람", "등록"].map((menu) => (
           <button
             key={menu}
             className={`${styles.menuItem} ${activeMain === menu ? styles.active : ""}`}
