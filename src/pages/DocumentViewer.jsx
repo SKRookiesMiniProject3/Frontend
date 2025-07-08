@@ -8,11 +8,20 @@ import Pagination from '../components/Pagination';
 import { fetchDocuments } from '../api/documents';
 import './DocumentViewer.css';
 
+// 프론트 카테고리명 → 백엔드 categoryTypeId 매핑
+const categoryMap = {
+  "전체": null,
+  "사업계획서": 1,
+  "R&D 계획서": 2,
+  "실적보고서": 3,
+  "재무계획서": 4,
+  "제품소개서": 5
+};
+
 const modeMap = {
   "열람": "view",
   "수정": "edit",
-  "삭제": "delete",
-  "등록": "upload",
+  "등록": "upload"
 };
 
 const DocumentViewer = () => {
@@ -21,7 +30,7 @@ const DocumentViewer = () => {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const documentsPerPage = 4;
+  const documentsPerPage = 8;
 
   const totalPages = Math.ceil(documents.length / documentsPerPage);
   const paginatedDocs = documents.slice(
@@ -33,7 +42,8 @@ const DocumentViewer = () => {
   useEffect(() => {
     const loadDocs = async () => {
       try {
-        const result = await fetchDocuments(selectedCategory);
+        const categoryTypeId = categoryMap[selectedCategory];
+        const result = await fetchDocuments({ categoryTypeId });
         setDocuments(result);
       } catch (err) {
         console.error("문서 목록 불러오기 실패:", err);
