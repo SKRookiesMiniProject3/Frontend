@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import FilterTabs from '../components/FilterControls';
+import FilterControls from '../components/FilterControls';
 import DocumentGrid from '../components/DocumentGrid';
 import UploadModal from '../components/UploadModal';
 import Pagination from '../components/Pagination';
@@ -29,7 +29,9 @@ const DocumentViewer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const documentsPerPage = 8;
 
- 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   const sortedDocs = [...documents].sort((a, b) => b.id - a.id);
 
   const totalPages = Math.ceil(sortedDocs.length / documentsPerPage);
@@ -41,7 +43,11 @@ const DocumentViewer = () => {
   const loadDocs = async () => {
     try {
       const categoryTypeId = categoryNameToId[selectedCategory];
-      const result = await fetchDocuments({ categoryTypeId });
+      const result = await fetchDocuments({
+        categoryTypeId,
+        startDate: startDate ? startDate.toISOString().split('T')[0] : undefined,
+        endDate: endDate ? endDate.toISOString().split('T')[0] : undefined
+      });
       console.log("📄 불러온 문서 리스트:", result);
       setDocuments(result);
     } catch (err) {
@@ -51,7 +57,7 @@ const DocumentViewer = () => {
 
   useEffect(() => {
     loadDocs();
-  }, [selectedCategory]);
+  }, [selectedCategory, startDate, endDate]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -75,7 +81,7 @@ const DocumentViewer = () => {
     setShowUploadModal(false);
     setActiveMode("열람");
     setSelectedCategory("전체");
-    loadDocs(); // 업로드 후 새로고침
+    loadDocs();
   };
 
   const handlePageChange = (page) => {
@@ -109,8 +115,13 @@ const DocumentViewer = () => {
 
         <div className="content-area">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <FilterTabs />
-            <button onClick={loadDocs} className="refresh-btn" title="문서 새로고침">🔄</button>
+            <FilterControls
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
+            
           </div>
 
           <DocumentGrid
@@ -144,3 +155,4 @@ const DocumentViewer = () => {
 };
 
 export default DocumentViewer;
+
