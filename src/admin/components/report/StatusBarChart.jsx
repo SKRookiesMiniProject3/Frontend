@@ -17,16 +17,12 @@ const StatusBarChart = ({ data }) => {
     NOT_STARTED: "#FF6B6B",
     IN_PROGRESS: "#FFD93D",
     COMPLETED: "#6BCB77",
-    CANCELLED: "#A0AEC0",
-    ON_HOLD: "#4D96FF",
   };
 
   const statusLabelMap = {
     NOT_STARTED: "시작 전",
     IN_PROGRESS: "진행 중",
     COMPLETED: "완료",
-    CANCELLED: "취소",
-    ON_HOLD: "보류",
   };
 
   const formattedData = Object.entries(data).map(([key, value]) => ({

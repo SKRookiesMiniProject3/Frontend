@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import ErrorReportTable from "../components/report/ErrorReportTable";
 import ReportTrendChart from "../components/report/ReportTrendChart";
 import "../styles/ErrorReportList.css";
 import useAuthStore from "../../stores/authStore";
-import { fetchDailyErrorCounts } from "../api/errorReports";
+import { fetchDailyErrorCounts, fetchReportsByStatus, fetchLatestErrorReports, fetchReportsByDateRange } from "../api/errorReports";
+import errorReportStore from "../stores/errorReportStore";
+import FilterControls from "../../components/FilterControls";
 
 const ErrorReportList = () => {
   const { accessToken } = useAuthStore();
@@ -23,6 +27,10 @@ const ErrorReportList = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const [chartData, setChartData] = useState([]);
+  const { setReports } = errorReportStore();
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     const loadChartData = async () => {
@@ -30,7 +38,7 @@ const ErrorReportList = () => {
         const raw = await fetchDailyErrorCounts(accessToken);
         const formatted = raw
           .map((d) => ({
-            date: d.date.replace(/-/g, "."), // 예: 2025-07-08 → 2025.07.08
+            date: d.date.replace(/-/g, "."), //2025-07-08 → 2025.07.08
             count: d.count,
           }))
           .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -46,9 +54,7 @@ const ErrorReportList = () => {
   const statusFilterOptions = {
     "NOT_STARTED": "시작 안함",
     "IN_PROGRESS": "진행중",
-    "COMPLETED": "완료",
-    "CANCELLED": "취소",
-    "ON_HOLD": "보류",
+    "COMPLETED": "완료"
   };
 
   const handleLogout = () => {
@@ -61,12 +67,40 @@ const ErrorReportList = () => {
   };
 
   //새로 고침 버튼과 연동
-  const handleReset = () => {
+  const handleReset = async () => {
     setCurrentPage(1);
     setSortConfig({ key: null, direction: "asc" });
     setStatusFilter("");
     setPeriod("7");
+
+    const data = await fetchLatestErrorReports(accessToken);
+    const mapped = data.map((r) => ({
+      ...r,
+      created_dt: r.createdDt,
+    }));
+    setReports(mapped);
   };
+
+
+  const handleStatusFilter = async (page, status) => {
+    setCurrentPage(page);
+    setStatusFilter(status); // UI 필터 상태 유지
+
+    let data;
+    if (status) {
+      data = await fetchReportsByStatus(status, accessToken);
+    } else {
+      data = await fetchLatestErrorReports(accessToken); // 전체 조회
+    }
+
+    const mapped = data.map((r) => ({
+      ...r,
+      created_dt: r.createdDt,
+    }));
+
+    setReports(mapped);
+  };
+
 
   return (
     <div className="viewer-container">
@@ -80,7 +114,7 @@ const ErrorReportList = () => {
           <div className="status-filter-container">
             <button
               className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`}
-              onClick={() => setStatusFilter("")}
+              onClick={() => handleStatusFilter(1, "")}
             >
               전체
             </button>
@@ -88,7 +122,7 @@ const ErrorReportList = () => {
               <button
                 key={key}
                 className={`status-filter-btn ${statusFilter === key ? "active" : ""}`}
-                onClick={() => setStatusFilter(key)}
+                onClick={() => handleStatusFilter(1, key)}
               >
                 {label}
               </button>
@@ -97,7 +131,35 @@ const ErrorReportList = () => {
               <button className="reset-btn" onClick={handleReset}>🔄 새로고침</button>
             </div>
           </div>
+          {/* 날짜 필터 */}
+          <div className="date-filter-container">
+            <FilterControls
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
+            <button
+              className="date-search-btn"
+              onClick={async () => {
+                if (!startDate || !endDate) {
+                  alert("시작일과 종료일을 모두 선택해주세요.");
+                  return;
+                }
 
+                const data = await fetchReportsByDateRange(startDate, endDate, accessToken);
+                const mapped = data.map((r) => ({
+                  ...r,
+                  created_dt: r.createdDt,
+                }));
+                setReports(mapped);
+                setCurrentPage(1);
+                setPeriod("custom");
+              }}
+            >
+              📅 선택기간 조회
+            </button>
+          </div>
 
           <ErrorReportTable
             showSeeMore={false}
