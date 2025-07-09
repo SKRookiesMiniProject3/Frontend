@@ -22,15 +22,17 @@ const ErrorReportTable = ({
   const { accessToken } = useAuthStore();
   const { reports, setReports } = errorReportStore();
   const navigate = useNavigate();
+  const sortableKeys = ["reportStatus", "created_dt"];
 
   useEffect(() => {
     const loadReports = async () => {
       if (!accessToken) return;
 
       const data = await fetchLatestErrorReports(accessToken);
+      console.log("📦 에러 리포트 fetch 결과:", data);
       const mappedData = data.map((r) => ({
         ...r,
-        created_dt: r.createdAt,
+        created_dt: r.createdDt,
       }));
       setReports(mappedData);
     };
@@ -39,13 +41,17 @@ const ErrorReportTable = ({
   }, [accessToken, setReports]);
 
   const formatDate = (dateString) => {
+    if (!dateString) return "날짜 없음";
+
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "날짜 형식 오류";
+
     return `🗓️ ${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
   // 에러 리포트 상태 필터링
   const filteredReports = statusFilter
-    ? reports.filter((r) => String(r.resolved) === statusFilter)
+    ? reports.filter((r) => r.reportStatus === statusFilter)
     : reports;
 
   //에러 리포트 정렬
@@ -54,6 +60,15 @@ const ErrorReportTable = ({
         if (!sortConfig?.key) return 0;
         const aVal = a[sortConfig.key];
         const bVal = b[sortConfig.key];
+        
+        if (aVal === undefined || bVal === undefined) return 0; // 안전 처리
+
+        if (typeof aVal === "string") {
+          return sortConfig.direction === "asc"
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        }
+
         if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
         if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
@@ -87,19 +102,28 @@ const ErrorReportTable = ({
         )}
         {enableStatusFilter && (
           <div className="status-filter">
-            <button onClick={() => onPageChange(1)}>전체</button>
-            <button onClick={() => onPageChange(1, "미처리")}>미처리</button>
-            <button onClick={() => onPageChange(1, "처리")}>처리 완료</button>
+            <button onClick={() => onPageChange(1, "")}>전체</button>
+            <button onClick={() => onPageChange(1, "NOT_STARTED")}>시작 안함</button>
+            <button onClick={() => onPageChange(1, "IN_PROGRESS")}>진행중</button>
+            <button onClick={() => onPageChange(1, "COMPLETED")}>완료</button>
+            <button onClick={() => onPageChange(1, "CANCELLED")}>취소</button>
+            <button onClick={() => onPageChange(1, "ON_HOLD")}>보류</button>
           </div>
         )}
       </div>
       <table className="error-report-table">
         <thead>
           <tr>
-            {["id", "message", "created_dt", "resolved"].map((key) => (
-              <th key={key} onClick={() => handleSort(key)}>
-                {key === "created_dt" ? "Date" : key.charAt(0).toUpperCase() + key.slice(1)}
-                {enableSorting && (
+            {[
+              { key: "id", label: "ID" },
+              { key: "errorSourceMemberName", label: "Member" },
+              { key: "reportStatus", label: "Status" },
+              { key: "reportStatusDescription", label: "Status_Dec" },
+              { key: "created_dt", label: "Date" },
+            ].map(({ key, label }) => (
+              <th key={key} onClick={() => sortableKeys.includes(key) && handleSort(key)}>
+                {label}
+                {enableSorting && sortableKeys.includes(key) && (
                   <span className={`sort-indicator ${sortConfig.key === key ? "sorted" : ""}`}>
                     {sortConfig.key === key
                       ? sortConfig.direction === "asc"
@@ -115,19 +139,18 @@ const ErrorReportTable = ({
         </thead>
         <tbody>
           {paginatedReports.map((row) => (
-            <tr key={`${row.id}`}>
+            <tr key={row.id}>
               <td>{row.id}</td>
-              <td>{row.message}</td>
+              <td>{row.errorSourceMemberName || "알 수 없음"}</td>
+              <td>{row.reportStatus}</td>
+              <td>{row.reportStatusDescription}</td>
               <td>{formatDate(row.created_dt)}</td>
-              <td>{row.resolved ? "✅" : "❌"}</td>
               <td>
                 <button
                   className="check-btn"
                   onClick={() => {
-                    navigate('/admin/error-report-detail', {
-                      state: {
-                        report: row,
-                      },
+                    navigate(`/admin/error-report-detail/${row.id}`, {
+                      state: { report: row },
                     });
                   }}
                 >

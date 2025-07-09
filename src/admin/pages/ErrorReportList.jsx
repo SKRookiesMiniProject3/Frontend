@@ -43,9 +43,12 @@ const ErrorReportList = () => {
     if (accessToken) loadChartData();
   }, [accessToken]);
 
-  const resolvedFilterOptions = {
-    true: "처리",
-    false: "미처리",
+  const statusFilterOptions = {
+    "NOT_STARTED": "시작 안함",
+    "IN_PROGRESS": "진행중",
+    "COMPLETED": "완료",
+    "CANCELLED": "취소",
+    "ON_HOLD": "보류",
   };
 
   const handleLogout = () => {
@@ -75,10 +78,13 @@ const ErrorReportList = () => {
 
           {/* 상태 필터 버튼 */}
           <div className="status-filter-container">
-            <button className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`} onClick={() => setStatusFilter("")}>
+            <button
+              className={`status-filter-btn ${statusFilter === "" ? "active" : ""}`}
+              onClick={() => setStatusFilter("")}
+            >
               전체
             </button>
-            {Object.entries(resolvedFilterOptions).map(([key, label]) => (
+            {Object.entries(statusFilterOptions).map(([key, label]) => (
               <button
                 key={key}
                 className={`status-filter-btn ${statusFilter === key ? "active" : ""}`}
@@ -87,11 +93,11 @@ const ErrorReportList = () => {
                 {label}
               </button>
             ))}
-            {/* 새로고침 버튼 추가 */}
             <div className="reset-button-container">
               <button className="reset-btn" onClick={handleReset}>🔄 새로고침</button>
             </div>
           </div>
+
 
           <ErrorReportTable
             showSeeMore={false}

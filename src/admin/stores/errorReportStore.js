@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { fetchErrorReportById } from "../api/errorReports";
 
 const errorReportStore = create((set, get) => ({
   reports: [],
@@ -20,6 +21,16 @@ const errorReportStore = create((set, get) => ({
         r.id === id ? { ...r, ...updates } : r
       ),
     });
+  },
+
+  //상세 리포트 조회 후 상태 저장
+  fetchAndSetSelectedReport: async (id, token) => {
+    const result = await fetchErrorReportById(id, token);
+    if (result?.success && result.data) {
+      set({ selectedReport: result.data });
+    } else {
+      set({ selectedReport: null });
+    }
   },
 }));
 
