@@ -35,7 +35,7 @@ const App = () => {
         element={isLoggedIn ? <ErrorReportList /> : <Navigate to="/login" />}
       />
       <Route
-        path="/admin/error-report-detail"
+        path="/admin/error-report-detail/:id"
         element={isLoggedIn ? <ErrorReportDetail /> : <Navigate to="/login" />}
       />
     </Routes>

@@ -45,10 +45,10 @@
 }
 
 .status {
-  display: inline-flex; /* 수평 중앙 정렬 위해 flex 사용 */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 12px;
   font-size: 12px;
   line-height: 16px;
@@ -57,19 +57,29 @@
   text-align: center;
 }
 
-.status.completed {
+.status.COMPLETED {
   background-color: #d1fae5;
   color: #047857;
 }
 
-.status.inprogress {
+.status.IN_PROGRESS {
   background-color: #fde68a;
   color: #92400e;
 }
 
-.status.unprocessed {
+.status.NOT_STARTED {
   background-color: #fecaca;
   color: #b91c1c;
+}
+
+.status.CANCELLED {
+  background-color: #A0AEC0;
+  color: #2f2e2e;
+}
+
+.status.ON_HOLD {
+  background-color: #84b5fb;
+  color: #1c1fb9;
 }
 
 .role-badge.executive {

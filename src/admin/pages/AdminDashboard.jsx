@@ -11,6 +11,10 @@ import "../styles/AdminDashboard.css";
 import useUserStore from '../stores/userStore';
 import useAuthStore from "../../stores/authStore";
 import errorReportStore from '../stores/errorReportStore';
+import StatusBarChart from "../components/report/StatusBarChart";
+import CategoryPieChart from "../components/report/CategoryPieChart";
+import { getErrorReportStatusStats, getErrorReportCategoryStats, } from "../api/errorReports";
+
 
 const AdminDashboard = () => {
   const { users, setUsers } = useUserStore();
@@ -25,6 +29,10 @@ const AdminDashboard = () => {
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [unprocessedCount, setUnprocessedCount] = useState(0);
   const [weeklyReportCounts, setWeeklyReportCounts] = useState([0, 0, 0, 0]);
+
+  const [statusStats, setStatusStats] = useState({});
+  const [categoryStats, setCategoryStats] = useState({});
+
 
   //주간 에러 리포트 수 처리 로직
   const isThisWeek = (dateString) => {
@@ -78,24 +86,40 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-  const calcStats = () => {
-    const total = reports.length;
-    const weekly = reports.filter(r => isThisWeek(r.created_dt)).length;
-    const unprocessed = reports.filter(r => !r.resolved).length;
-    const weekCounts = [0, 0, 0, 0];
-    reports.forEach(r => {
-      const w = getWeekOfMonth(r.created_dt);
-      if (w >= 1 && w <= 4) weekCounts[w - 1]++;
-    });
+    const calcStats = () => {
+      const total = reports.length;
+      const weekly = reports.filter(r => isThisWeek(r.created_dt)).length;
+      const unprocessed = reports.filter(r => !r.resolved).length;
+      const weekCounts = [0, 0, 0, 0];
+      reports.forEach(r => {
+        const w = getWeekOfMonth(r.created_dt);
+        if (w >= 1 && w <= 4) weekCounts[w - 1]++;
+      });
 
-    setTotalCount(total);
-    setWeeklyCount(weekly);
-    setUnprocessedCount(unprocessed);
-    setWeeklyReportCounts(weekCounts);
-  };
+      setTotalCount(total);
+      setWeeklyCount(weekly);
+      setUnprocessedCount(unprocessed);
+      setWeeklyReportCounts(weekCounts);
+    };
 
-  calcStats();
-}, [reports]);
+    calcStats();
+  }, [reports]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const statusRes = await getErrorReportStatusStats(accessToken);
+      if (statusRes?.success) {
+        setStatusStats(statusRes.data);
+      }
+
+      const categoryRes = await getErrorReportCategoryStats(accessToken);
+      if (categoryRes?.success) {
+        setCategoryStats(categoryRes.data);
+      }
+    };
+
+    fetchStats();
+  }, [accessToken]);
 
   const handleLogout = () => {
     logout();
@@ -129,6 +153,17 @@ const AdminDashboard = () => {
             {/* 주간 에러 리포트 합계 차트 */}
             <div className="weekly-chart-container">
               <WeeklyReportChart counts={weeklyReportCounts} />
+            </div>
+          </div>
+          <div className="chart-section">
+            <div className="chart-box wide">
+              <h3>Report Statistics by Status</h3>
+              <StatusBarChart data={statusStats} />
+            </div>
+
+            <div className="chart-box narrow">
+              <h3>Report Statistics by Category</h3>
+              <CategoryPieChart data={categoryStats} />
             </div>
           </div>
           {/* 회원 리스트 테이블 */}
