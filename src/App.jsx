@@ -7,6 +7,7 @@ import AdminDashboard from './admin/pages/AdminDashboard';
 import MemberCRUD from './admin/pages/MemberCRUD';
 import ErrorReportList from './admin/pages/ErrorReportList';
 import ErrorReportDetail from './admin/pages/ErrorReportDetail';
+import AttackErrorReportList from './admin/pages/AttackErrorReportList';
 import useAuthStore from './stores/authStore';
 
 const App = () => {
@@ -37,6 +38,10 @@ const App = () => {
       <Route
         path="/admin/error-report-detail/:id"
         element={isLoggedIn ? <ErrorReportDetail /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/admin/error-report/attack"
+        element={isLoggedIn ? <AttackErrorReportList /> : <Navigate to="/login" />}
       />
     </Routes>
   );

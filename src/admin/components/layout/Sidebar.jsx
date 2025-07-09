@@ -17,6 +17,7 @@ const Sidebar = ({ selectedMode, onSelectMode }) => {
     { label: "대시보드", path: "/admin" },
     { label: "회원관리", path: "/admin/member-crud" },
     { label: "리포트 관리", path: "/admin/error-report" },
+    { label: "공격 리포트 관리", path: "/admin/error-report/attack" },
   ];
 
   const handleMainClick = (menu) => {
