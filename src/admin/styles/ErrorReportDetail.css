@@ -8,21 +8,22 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
+  font-family: 'Segoe UI', sans-serif; /* 폰트 깔끔하게 */
 }
 
 .detail-header {
   display: flex;
-  justify-content: space-between; /* 좌측: 타이틀 / 우측: 버튼 */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   border-bottom: 1px solid #eee;
+  padding-bottom: 10px; /* 제목과 경계 더 띄우기 */
 }
 
 .detail-title {
   font-size: 1.8rem;
   color: #1e1b4b;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+  margin: 0;
 }
 
 .info-grid {
@@ -37,6 +38,7 @@
   font-size: 14px;
   color: #333;
   word-break: break-word;
+  line-height: 1.6; /* 줄 간격 조금 여유 */
 }
 
 .btn-group {
@@ -59,7 +61,6 @@
 .delete-btn:hover {
   background-color: #616161;
 }
-
 
 .edit-section {
   display: flex;
@@ -90,18 +91,26 @@
 .edit-section select,
 .edit-section textarea {
   margin-top: 8px;
-  height: 40px;
-  padding: 0 12px;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
   resize: vertical;
-  min-height: 40px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-section select:focus,
+.edit-section textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* 포커스 시 부드러운 테두리 */
+  outline: none;
 }
 
 .edit-section textarea {
   min-height: 120px;
-  line-height: 1.5;
+  line-height: 1.6;
+  background-color: #f9f9fb; /* 살짝 배경 넣어서 폼 느낌 */
 }
 
 /* 저장 버튼 */
@@ -109,7 +118,7 @@
   background-color: #6366f1;
   color: white;
   border: none;
-  height: 30px;
+  height: 34px;
   padding: 0 16px;
   cursor: pointer;
   border-radius: 6px;
@@ -123,7 +132,7 @@
   background-color: #494cec;
 }
 
-/* 코멘트 저장 버튼 */
+/* 코멘트 저장 버튼 정렬 */
 .comment-btn-container {
   display: flex;
   justify-content: flex-end;
