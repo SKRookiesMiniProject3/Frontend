@@ -202,3 +202,29 @@ export const resolveErrorReportById = async (id, token) => {
     return null;
   }
 };
+
+
+
+export const fetchValidErrorReports = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/valid`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("VALID 에러 리포트 조회 실패:", error);
+    return [];
+  }
+};
+
+export const fetchInvalidErrorReports = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/invalid`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("INVALID 에러 리포트 조회 실패:", error);
+    return [];
+  }
+};
