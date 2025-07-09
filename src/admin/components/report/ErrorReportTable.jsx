@@ -116,9 +116,9 @@ const ErrorReportTable = ({
           <tr>
             {[
               { key: "id", label: "ID" },
-              { key: "errorSourceMemberName", label: "Member" },
+              { key: "reportTitle", label: "Title" },
+              { key: "reportCategory", label: "Category" },
               { key: "reportStatus", label: "Status" },
-              { key: "reportStatusDescription", label: "Status_Dec" },
               { key: "created_dt", label: "Date" },
             ].map(({ key, label }) => (
               <th key={key} onClick={() => sortableKeys.includes(key) && handleSort(key)}>
@@ -141,7 +141,8 @@ const ErrorReportTable = ({
           {paginatedReports.map((row) => (
             <tr key={row.id}>
               <td>{row.id}</td>
-              <td>{row.errorSourceMemberName || "알 수 없음"}</td>
+              <td>{row.reportTitle}</td>
+              <td>{row.reportCategory}</td>
               <td>
                 <div className={`status ${row.reportStatus}`}>
                   {row.reportStatus === "NOT_STARTED" && "NOT_STARTED"}
@@ -151,7 +152,6 @@ const ErrorReportTable = ({
                   {row.reportStatus === "ON_HOLD" && "ON_HOLD"}
                 </div>
               </td>
-              <td>{row.reportStatusDescription}</td>
               <td>{formatDate(row.created_dt)}</td>
               <td>
                 <button
