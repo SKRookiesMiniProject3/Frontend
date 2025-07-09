@@ -11,6 +11,7 @@
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  font-family: 'Inter', sans-serif; /* ✅ 폰트 설정 추가 */
 }
 
 .table-title {
@@ -36,6 +37,7 @@
   gap: 4px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  
 }
 
 .sort-indicator {
@@ -48,17 +50,19 @@
 }
 
 .status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  line-height: 16px;
-  width: 70px;
-  height: 19px;
-  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #1f2937; /* 진한 회색 텍스트 */
+  background: none;
+  border: none;
+  padding: 0;
+    vertical-align: middle;   /* ✅ 세로 중앙 정렬 핵심 */
+  margin: 0;
+  width: auto;
+  height: auto;
+  display: inline;
 }
+
 
 .status.COMPLETED {
   background-color: #d1fae5;
@@ -134,8 +138,20 @@
   color: #007bff;
   user-select: none;
   font-weight: 600;
+  vertical-align: middle; 
+
 }
 .category-toggle-header:hover {
   text-decoration: underline;
+}
+
+/* 테이블 행 클릭 가능하게 스타일 */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.clickable-row:hover {
+  background-color: #f3f4f6;
 }
 
