@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import FilterTabs from '../components/FilterTabs';
+import FilterControls from '../components/FilterControls';
 import DocumentGrid from '../components/DocumentGrid';
 import UploadModal from '../components/UploadModal';
 import Pagination from '../components/Pagination';
@@ -22,10 +22,11 @@ const DocumentViewer = () => {
   const [activeMode, setActiveMode] = useState("열람");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const [showMenu, setShowMenu] = useState(false);
   const { logout, user } = useAuthStore();
-  console.log(user?.role);
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,25 +41,28 @@ const DocumentViewer = () => {
   const loadDocs = async () => {
     try {
       const categoryTypeId = categoryNameToId[selectedCategory];
-      const result = await fetchDocuments({ categoryTypeId });
-      console.log("📄 불러온 문서 리스트:", result);
+      const result = await fetchDocuments({
+        categoryTypeId,
+        startDate: startDate?.toISOString().split('T')[0],
+        endDate: endDate?.toISOString().split('T')[0]
+      });
+      console.log("\ud30c\uc77c \ubc1c\uacac:", result);
       setDocuments(result);
     } catch (err) {
-      console.error("문서 목록 불러오기 실패:", err);
+      console.error("\ubb38\uc11c \ubaa9\ub85d \ubd88\ub7ec\uc624\uae30 \uc2e4\ud328:", err);
     }
   };
 
-  // ✅ 선택된 카테고리가 변경될 때 문서 불러오기
   useEffect(() => {
     loadDocs();
-  }, [selectedCategory]);
+  }, [selectedCategory, startDate, endDate]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
 
   useEffect(() => {
-    if (activeMode === "등록") {
+    if (activeMode === "\ub4f1\ub85d") {
       setShowUploadModal(true);
     } else {
       setShowUploadModal(false);
@@ -67,15 +71,15 @@ const DocumentViewer = () => {
 
   const handleCloseModal = () => {
     setShowUploadModal(false);
-    setActiveMode("열람");
+    setActiveMode("\uc5f4\ub7ad");
   };
 
   const handleUpload = ({ title, file, category }) => {
-    console.log("업로드된 문서:", title, file, category);
+    console.log("\uc5c5\ub85c\ub4dc\ub41c \ubb38\uc11c:", title, file, category);
     setShowUploadModal(false);
-    setActiveMode("열람");
-    setSelectedCategory("전체");
-    loadDocs(); // 업로드 후 새로고침
+    setActiveMode("\uc5f4\ub7ad");
+    setSelectedCategory("\uc804\uccb4");
+    loadDocs();
   };
 
   const handlePageChange = (page) => {
@@ -91,7 +95,7 @@ const DocumentViewer = () => {
     if (user?.role === "CEO") {
       navigate("/admin");
     } else {
-      alert("관리자만 접근할 수 있습니다.");
+      alert("\uad00\ub9ac\uc790\ub9cc \uc811\uadfc\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.");
       window.location.reload();
     }
   };
@@ -99,7 +103,6 @@ const DocumentViewer = () => {
   return (
     <div className="viewer-container">
       <Header />
-
       <div className="main-content">
         <Sidebar
           activeMain={activeMode}
@@ -109,19 +112,22 @@ const DocumentViewer = () => {
         />
 
         <div className="content-area">
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-  <FilterTabs />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <FilterControls
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
 
-  {/* 🔄 새로고침 버튼 */}
-  <button
-    onClick={loadDocs}
-    className="refresh-btn"
-    title="문서 새로고침"
-  >
-    🔄
-  </button>
-</div>
-
+            {/* <button
+              onClick={loadDocs}
+              className="refresh-btn"
+               title="문서 새로고침"
+            >
+              🔄
+            </button> */}
+          </div>
 
           <DocumentGrid
             documents={paginatedDocs}
@@ -134,16 +140,17 @@ const DocumentViewer = () => {
             onPageChange={handlePageChange}
           />
         </div>
-        {/* 로그아웃, 관리자 페이지 이동 */}
+
         <div className="content-toolbar">
-          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
-          {showMenu && (
+        <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
+        {showMenu && (
             <div className="dropdown-menu">
-              <button onClick={handleAdminPage}>관리자 페이지</button>
-              <button onClick={handleLogout}>로그아웃</button>
+            <button onClick={handleAdminPage}>관리자 페이지</button>
+            <button onClick={handleLogout}>로그아웃</button>
             </div>
-          )}
+        )}
         </div>
+
       </div>
 
       {showUploadModal && (

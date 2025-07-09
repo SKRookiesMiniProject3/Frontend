@@ -9,8 +9,8 @@ const UploadModal = ({ onClose }) => {
   const [content, setContent] = useState("");
   const [categoryTypeId, setCategoryTypeId] = useState("1");
   const [readRoleId, setReadRoleId] = useState("1");
-  const [writeRoleId, setWriteRoleId] = useState("2");
-  const [deleteRoleId, setDeleteRoleId] = useState("3");
+//   const [writeRoleId, setWriteRoleId] = useState("2");
+//   const [deleteRoleId, setDeleteRoleId] = useState("3");
   const [file, setFile] = useState(null);
 
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -29,8 +29,8 @@ const UploadModal = ({ onClose }) => {
     formData.append("content", content);
     formData.append("categoryTypeId", categoryTypeId);
     formData.append("readRoleId", readRoleId);
-    formData.append("writeRoleId", writeRoleId);
-    formData.append("deleteRoleId", deleteRoleId);
+    // formData.append("writeRoleId", writeRoleId);
+    // formData.append("deleteRoleId", deleteRoleId);
 
     try {
       await uploadDocument(formData, accessToken);
@@ -101,7 +101,7 @@ const UploadModal = ({ onClose }) => {
                 ))}
             </select>
             </label>
-
+{/* 
             <label>
             쓰기 권한
             <select value={writeRoleId} onChange={(e) => setWriteRoleId(e.target.value)}>
@@ -111,8 +111,8 @@ const UploadModal = ({ onClose }) => {
                 </option>
                 ))}
             </select>
-            </label>
-
+            </label> */}
+{/* 
             <label>
             삭제 권한
             <select value={deleteRoleId} onChange={(e) => setDeleteRoleId(e.target.value)}>
@@ -122,7 +122,7 @@ const UploadModal = ({ onClose }) => {
                 </option>
                 ))}
             </select>
-            </label>
+            </label> */}
           </div>
 
           <div className={styles.buttonGroup}>
