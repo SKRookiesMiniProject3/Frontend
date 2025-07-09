@@ -100,7 +100,13 @@ const ErrorReportDetail = () => {
         <Sidebar selectedMode={mode} onSelectMode={setMode} />
         <div className="content-area">
           <div className="detail-container">
-            <h2 className="detail-title">에러 리포트 상세</h2>
+            <div className="detail-header">
+              <h2 className="detail-title">에러 리포트 상세</h2>
+              <button className="delete-btn" onClick={handleDelete}>
+                🗑️ 삭제하기
+              </button>
+            </div>
+
             {/* 로그아웃, 메인 페이지 이동 */}
             <div className="content-toolbar">
             <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
@@ -118,16 +124,18 @@ const ErrorReportDetail = () => {
             </div>
 
             <div className="edit-section">
-              <label>
+              <label className="status-row">
                 <strong>진행상태:</strong>
-                <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                  <option value="NOT_STARTED">시작 안함</option>
-                  <option value="IN_PROGRESS">진행중</option>
-                  <option value="COMPLETED">완료</option>
-                  <option value="CANCELLED">취소</option>
-                  <option value="ON_HOLD">보류</option>
-                </select>
-                <button onClick={handleStatusUpdate} className="save-btn">상태 저장</button>
+                <div className="status-control">
+                  <select value={status} onChange={(e) => setStatus(e.target.value)}>
+                    <option value="NOT_STARTED">시작 안함</option>
+                    <option value="IN_PROGRESS">진행중</option>
+                    <option value="COMPLETED">완료</option>
+                    <option value="CANCELLED">취소</option>
+                    <option value="ON_HOLD">보류</option>
+                  </select>
+                  <button onClick={handleStatusUpdate} className="save-btn">상태 저장</button>
+                </div>
               </label>
 
               <label>
@@ -137,14 +145,12 @@ const ErrorReportDetail = () => {
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="코멘트를 입력하세요"
                 />
-                <button onClick={handleCommentSave} className="save-btn">코멘트 저장</button>
+                <div className="comment-btn-container">
+                  <button onClick={handleCommentSave} className="save-btn">코멘트 저장</button>
+                </div>
               </label>
             </div>
-            <div className="btn-group">
-              <button className="delete-btn" onClick={handleDelete}>
-                🗑️ 삭제하기
-              </button>
-            </div>
+
           </div>
         </div>
       </div>

@@ -157,12 +157,12 @@ const AdminDashboard = () => {
           </div>
           <div className="chart-section">
             <div className="chart-box wide">
-              <h3>상태별 리포트 통계</h3>
+              <h3>Report Statistics by Status</h3>
               <StatusBarChart data={statusStats} />
             </div>
 
             <div className="chart-box narrow">
-              <h3>카테고리별 리포트 통계</h3>
+              <h3>Report Statistics by Category</h3>
               <CategoryPieChart data={categoryStats} />
             </div>
           </div>
