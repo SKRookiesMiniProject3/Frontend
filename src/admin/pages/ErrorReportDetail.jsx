@@ -134,8 +134,6 @@ const ErrorReportDetail = () => {
                     <option value="NOT_STARTED">시작 안함</option>
                     <option value="IN_PROGRESS">진행중</option>
                     <option value="COMPLETED">완료</option>
-                    <option value="CANCELLED">취소</option>
-                    <option value="ON_HOLD">보류</option>
                   </select>
                   <button onClick={handleStatusUpdate} className="save-btn">상태 저장</button>
                 </div>
