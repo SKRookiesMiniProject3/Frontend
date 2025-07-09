@@ -4,6 +4,7 @@ import styles from './DocumentGrid.module.css';
 import { downloadDocumentByHash } from '../api/documents';
 import useAuthStore from '../stores/authStore';
 import { ROLE_NAME_TO_ID } from '../constants/roleMap';
+import { categoryImageMap } from '../constants/categoryImageMap'; // 이미지 매핑 확인용
 
 const DocumentGrid = ({ documents = [], mode = "view" }) => {
   const userRoleName = useAuthStore((state) => state.role);
@@ -33,28 +34,32 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
 
   return (
     <div className={styles.grid}>
-      {documents.map((doc) => {
-        const docRoleId = Number(doc.readRole?.id);
-        const isLocked = doc.readRole !== undefined && !isNaN(docRoleId) && userRoleId < docRoleId;
+      {[...documents]
+        .sort((a, b) => b.id - a.id)
+        .map((doc) => {
+          const categoryName = doc.categories?.[0]?.name || 'DEFAULT';
+          const categoryKey = categoryName.toUpperCase().replace(/ /g, '_');
+          const imagePath = categoryImageMap[categoryKey] || categoryImageMap.DEFAULT;
 
-        const categoryKey = doc.categories?.[0]?.name?.toUpperCase().replace(/ /g, '_') || 'DEFAULT';
+          console.log("📌 카테고리 이름:", categoryName);
+          console.log("📌 가공된 키:", categoryKey);
+          console.log("📌 이미지 경로:", imagePath);
 
-        return (
-          <div
-            key={doc.id}
-            className={styles.card}
-            onClick={() => handleClickCard(doc)}
-          >
-            <DocumentCard
-              fileName={doc.fileName}
-              createdAt={doc.createdAt}
-              createdRole={doc.createdRole}
-              locked={isLocked}
-              categoryKey={categoryKey}
-            />
-          </div>
-        );
-      })}
+          return (
+            <div
+              key={doc.id}
+              className={styles.card}
+              onClick={() => handleClickCard(doc)}
+            >
+              <DocumentCard
+                fileName={doc.fileName}
+                createdAt={doc.createdAt}
+                createdRole={doc.createdRole}
+                categoryKey={categoryKey}
+              />
+            </div>
+          );
+        })}
     </div>
   );
 };
