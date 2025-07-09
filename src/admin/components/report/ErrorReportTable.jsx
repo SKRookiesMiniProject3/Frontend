@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './ErrorReportTable.css';
@@ -23,13 +23,14 @@ const ErrorReportTable = ({
   const { reports, setReports } = errorReportStore();
   const navigate = useNavigate();
   const sortableKeys = ["reportStatus", "created_dt"];
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
 
   useEffect(() => {
     const loadReports = async () => {
       if (!accessToken) return;
 
       const data = await fetchLatestErrorReports(accessToken);
-      console.log("📦 에러 리포트 fetch 결과:", data);
+      console.log("\ud83d\udce6 \uc5d0\ub7ec \ub9ac\ud3ec\ud2b8 fetch \uacb0\uacfc:", data);
       const mappedData = data.map((r) => ({
         ...r,
         created_dt: r.createdDt,
@@ -41,27 +42,34 @@ const ErrorReportTable = ({
   }, [accessToken, setReports]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return "날짜 없음";
+    if (!dateString) return "\ub0a0\uc9dc \uc5c6\uc74c";
 
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "날짜 형식 오류";
+    if (isNaN(date.getTime())) return "\ub0a0\uc9dc \ud615\uc2dd \uc624\ub958";
 
-    return `🗓️ ${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+    return `\ud83d\uddd3\ufe0f ${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
-  // 에러 리포트 상태 필터링
-  const filteredReports = statusFilter
-    ? reports.filter((r) => r.reportStatus === statusFilter)
-    : reports;
+  const toggleCategoryFilter = () => {
+    setCategoryFilter((prev) =>
+      prev === "ALL" ? "VALID" : prev === "VALID" ? "INVALID" : "ALL"
+    );
+  };
 
-  //에러 리포트 정렬
+  const filteredReports = reports.filter((r) => {
+    if (statusFilter && r.reportStatus !== statusFilter) return false;
+    if (categoryFilter === "VALID" && r.reportCategory !== "VALID") return false;
+    if (categoryFilter === "INVALID" && r.reportCategory !== "INVALID") return false;
+    return true;
+  });
+
   const sortedReports = enableSorting
     ? [...filteredReports].sort((a, b) => {
         if (!sortConfig?.key) return 0;
         const aVal = a[sortConfig.key];
         const bVal = b[sortConfig.key];
-        
-        if (aVal === undefined || bVal === undefined) return 0; // 안전 처리
+
+        if (aVal === undefined || bVal === undefined) return 0;
 
         if (typeof aVal === "string") {
           return sortConfig.direction === "asc"
@@ -106,32 +114,21 @@ const ErrorReportTable = ({
             <button onClick={() => onPageChange(1, "NOT_STARTED")}>시작 안함</button>
             <button onClick={() => onPageChange(1, "IN_PROGRESS")}>진행중</button>
             <button onClick={() => onPageChange(1, "COMPLETED")}>완료</button>
+            <button onClick={() => onPageChange(1, "CANCELLED")}>취소</button>
+            <button onClick={() => onPageChange(1, "ON_HOLD")}>보류</button>
           </div>
         )}
       </div>
       <table className="error-report-table">
         <thead>
           <tr>
-            {[
-              { key: "id", label: "ID" },
-              { key: "reportTitle", label: "Title" },
-              { key: "reportCategory", label: "Category" },
-              { key: "reportStatus", label: "Status" },
-              { key: "created_dt", label: "Date" },
-            ].map(({ key, label }) => (
-              <th key={key} onClick={() => sortableKeys.includes(key) && handleSort(key)}>
-                {label}
-                {enableSorting && sortableKeys.includes(key) && (
-                  <span className={`sort-indicator ${sortConfig.key === key ? "sorted" : ""}`}>
-                    {sortConfig.key === key
-                      ? sortConfig.direction === "asc"
-                        ? "▲"
-                        : "▼"
-                      : "▼"}
-                  </span>
-                )}
-              </th>
-            ))}
+            <th>ID</th>
+            <th>Title</th>
+            <th onClick={toggleCategoryFilter} style={{ cursor: 'pointer' }}>
+              Category ({categoryFilter})
+            </th>
+            <th onClick={() => handleSort("reportStatus")}>Status {enableSorting && sortConfig.key === "reportStatus" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
+            <th onClick={() => handleSort("created_dt")}>Date {enableSorting && sortConfig.key === "created_dt" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
             <th></th>
           </tr>
         </thead>
@@ -143,11 +140,7 @@ const ErrorReportTable = ({
               <td>{row.reportCategory}</td>
               <td>
                 <div className={`status ${row.reportStatus}`}>
-                  {row.reportStatus === "NOT_STARTED" && "NOT_STARTED"}
-                  {row.reportStatus === "IN_PROGRESS" && "IN_PROGRESS"}
-                  {row.reportStatus === "COMPLETED" && "COMPLETED"}
-                  {row.reportStatus === "CANCELLED" && "CANCELLED"}
-                  {row.reportStatus === "ON_HOLD" && "ON_HOLD"}
+                  {row.reportStatus}
                 </div>
               </td>
               <td>{formatDate(row.created_dt)}</td>

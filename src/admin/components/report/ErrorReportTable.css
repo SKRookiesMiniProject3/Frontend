@@ -125,3 +125,14 @@
   text-decoration: underline;
   color: #4338ca;
 }
+
+.category-toggle-header {
+  cursor: pointer;
+  color: #007bff;
+  user-select: none;
+  font-weight: 600;
+}
+.category-toggle-header:hover {
+  text-decoration: underline;
+}
+
