@@ -22,6 +22,7 @@
 .error-report-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .error-report-table th, .error-report-table td {
@@ -33,6 +34,8 @@
   position: relative;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .sort-indicator {

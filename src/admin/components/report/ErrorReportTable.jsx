@@ -22,7 +22,6 @@ const ErrorReportTable = ({
   const { accessToken } = useAuthStore();
   const { reports, setReports } = errorReportStore();
   const navigate = useNavigate();
-  const sortableKeys = ["reportStatus", "created_dt"];
   const [categoryFilter, setCategoryFilter] = useState("ALL");
 
   useEffect(() => {
@@ -122,14 +121,14 @@ const ErrorReportTable = ({
       <table className="error-report-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Title</th>
+           <th style={{ width: "6%" }}>ID</th>
+            <th style={{ width: "32%" }}>Title</th>
             <th onClick={toggleCategoryFilter} style={{ cursor: 'pointer' }}>
               Category ({categoryFilter})
             </th>
             <th onClick={() => handleSort("reportStatus")}>Status {enableSorting && sortConfig.key === "reportStatus" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
             <th onClick={() => handleSort("created_dt")}>Date {enableSorting && sortConfig.key === "created_dt" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
-            <th></th>
+            <th style={{ width: "10%" }}></th>
           </tr>
         </thead>
         <tbody>

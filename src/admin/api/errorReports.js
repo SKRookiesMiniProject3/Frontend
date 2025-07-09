@@ -3,9 +3,10 @@ import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 //일별 에러 리포트 개수 조회
-export const fetchDailyErrorCounts = async (token) => {
+export const fetchDailyErrorCounts = async (token, period = "7") => {
   try {
     const response = await axios.get(`${BASE_URL}/api/v1/error-reports/analytics/daily-count`, {
+      params: { period },
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

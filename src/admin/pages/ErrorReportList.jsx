@@ -35,21 +35,52 @@ const ErrorReportList = () => {
   useEffect(() => {
     const loadChartData = async () => {
       try {
-        const raw = await fetchDailyErrorCounts(accessToken);
-        const formatted = raw
-          .map((d) => ({
-            date: d.date.replace(/-/g, "."), //2025-07-08 → 2025.07.08
-            count: d.count,
+        const raw = await fetchDailyErrorCounts(accessToken, period);
+
+        const sorted = raw
+          .map((d) => {
+            const rawDate = new Date(d.date);
+            return {
+              date: formatToMonthDay(d.date),
+              rawDate,
+              count: d.count,
+            };
+          })
+          .sort((a, b) => a.rawDate - b.rawDate);
+
+        const today = new Date();
+        let filtered = [...sorted];
+
+        if (period === "7") {
+          const sevenDaysAgo = new Date(today);
+          sevenDaysAgo.setDate(today.getDate() - 6);
+          filtered = sorted.filter((d) => d.rawDate >= sevenDaysAgo);
+        } else if (period === "30") {
+          const thirtyDaysAgo = new Date(today);
+          thirtyDaysAgo.setDate(today.getDate() - 29);
+          filtered = sorted.filter((d) => d.rawDate >= thirtyDaysAgo);
+        }
+
+        setChartData(
+          filtered.map(({ date, count }) => ({
+            date,
+            count,
           }))
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
-        setChartData(formatted);
+        );
       } catch (error) {
         console.error("일별 에러 리포트 차트 데이터 불러오기 실패:", error);
       }
     };
 
     if (accessToken) loadChartData();
-  }, [accessToken]);
+  }, [accessToken, period]);
+
+  const formatToMonthDay = (dateString) => {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${month}/${day}`;
+  };
 
   const statusFilterOptions = {
     "NOT_STARTED": "시작 안함",
