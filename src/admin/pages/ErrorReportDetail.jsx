@@ -101,7 +101,7 @@ const ErrorReportDetail = () => {
         <div className="content-area">
           <div className="detail-container">
             <div className="detail-header">
-              <h2 className="detail-title">에러 리포트 상세</h2>
+              <h2 className="detail-title">{report.reportTitle}</h2>
               <button className="delete-btn" onClick={handleDelete}>
                 🗑️ 삭제하기
               </button>
@@ -118,9 +118,12 @@ const ErrorReportDetail = () => {
             )}
             </div>
             <div className="info-grid">
-              <p><strong>리포트 ID:</strong> {report.id}</p>
-              <p><strong>에러 발생자:</strong> {report.errorSourceMemberName || "알 수 없음"}</p>
-              <p><strong>작성일시:</strong> {formatDate(report.createdDt)}</p>
+              <p><strong>Report ID:</strong> {report.id}</p>
+              <p><strong>Preview:</strong> {report.reportPreview}</p>
+              <p><strong>Category:</strong> {report.reportCategory} ({report.reportCategoryDescription})</p>
+              <p><strong>Report File Path:</strong> {report.reportPath}</p>
+              <p><strong>Status:</strong> {report.reportStatus} ({report.reportStatusDescription})</p>
+              <p><strong>Date:</strong> {formatDate(report.createdDt)}</p>
             </div>
 
             <div className="edit-section">
