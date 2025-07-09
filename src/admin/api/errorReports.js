@@ -204,8 +204,7 @@ export const resolveErrorReportById = async (id, token) => {
   }
 };
 
-
-
+//valid 카테고리 조회
 export const fetchValidErrorReports = async (token) => {
   try {
     const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/valid`, {
@@ -218,6 +217,7 @@ export const fetchValidErrorReports = async (token) => {
   }
 };
 
+//invalid 카테고리 조회
 export const fetchInvalidErrorReports = async (token) => {
   try {
     const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/invalid`, {
@@ -226,6 +226,32 @@ export const fetchInvalidErrorReports = async (token) => {
     return response.data;
   } catch (error) {
     console.error("INVALID 에러 리포트 조회 실패:", error);
+    return [];
+  }
+};
+
+//공격 에러 리포트 조회
+export const fetchAttackErrorReports = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/attacks`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("공격 에러 리포트 조회 실패:", error);
+    return [];
+  }
+};
+
+//공격 에러 리포트 통계 조회
+export const fetchAttackErrorReportsCount = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/analytics/recent-attacks`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("공격 에러 리포트 통계 조회 실패:", error);
     return [];
   }
 };

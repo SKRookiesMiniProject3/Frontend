@@ -13,7 +13,7 @@ import useAuthStore from "../../stores/authStore";
 import errorReportStore from '../stores/errorReportStore';
 import StatusBarChart from "../components/report/StatusBarChart";
 import CategoryPieChart from "../components/report/CategoryPieChart";
-import { getErrorReportStatusStats, getErrorReportCategoryStats, } from "../api/errorReports";
+import { getErrorReportStatusStats, getErrorReportCategoryStats, fetchAttackErrorReportsCount } from "../api/errorReports";
 
 
 const AdminDashboard = () => {
@@ -33,6 +33,7 @@ const AdminDashboard = () => {
   const [statusStats, setStatusStats] = useState({});
   const [categoryStats, setCategoryStats] = useState({});
 
+  const [attackReportCount, setAttackReportCount] = useState(0);
 
   //주간 에러 리포트 수 처리 로직
   const isThisWeek = (dateString) => {
@@ -121,6 +122,26 @@ const AdminDashboard = () => {
     fetchStats();
   }, [accessToken]);
 
+  useEffect(() => {
+  const loadAttackReportStats = async () => {
+    try {
+      const res = await fetchAttackErrorReportsCount(accessToken);
+      console.log("📊 공격 리포트 통계 응답:", res);
+
+      if (res?.data !== undefined) {
+        setAttackReportCount(res.data);
+      } else {
+        console.warn("⚠️ 'data' 필드 없음", res);
+      }
+    } catch (error) {
+      console.error("❌ 공격 리포트 통계 fetch 실패:", error);
+    }
+  };
+
+  if (accessToken) loadAttackReportStats();
+}, [accessToken]);
+
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -143,6 +164,7 @@ const AdminDashboard = () => {
             <StatCard title="Weekly Error Report Count" count={weeklyCount} />
             <StatCard title="Unprocessed Report Count" count={unprocessedCount} />
             <StatCard title="Total Member Count" count={users.length} />
+            <StatCard title="🚨 Attack Error Reports" count={attackReportCount} />
           </div>
 
           <div className="report-chart-wrapper">
