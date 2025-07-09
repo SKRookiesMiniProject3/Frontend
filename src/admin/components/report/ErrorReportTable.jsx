@@ -142,7 +142,15 @@ const ErrorReportTable = ({
             <tr key={row.id}>
               <td>{row.id}</td>
               <td>{row.errorSourceMemberName || "알 수 없음"}</td>
-              <td>{row.reportStatus}</td>
+              <td>
+                <div className={`status ${row.reportStatus}`}>
+                  {row.reportStatus === "NOT_STARTED" && "NOT_STARTED"}
+                  {row.reportStatus === "IN_PROGRESS" && "IN_PROGRESS"}
+                  {row.reportStatus === "COMPLETED" && "COMPLETED"}
+                  {row.reportStatus === "CANCELLED" && "CANCELLED"}
+                  {row.reportStatus === "ON_HOLD" && "ON_HOLD"}
+                </div>
+              </td>
               <td>{row.reportStatusDescription}</td>
               <td>{formatDate(row.created_dt)}</td>
               <td>

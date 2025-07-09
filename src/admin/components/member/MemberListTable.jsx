@@ -100,54 +100,10 @@ const MemberListTable = ({
       <table className="member-list-table">
         <thead>
           <tr>
-            <th onClick={() => handleSort("id")}>
-              ID
-              {enableSorting && (
-                <span className={`sort-indicator ${sortConfig.key === "id" ? "sorted" : ""}`}>
-                  {enableSorting && sortConfig.key === "id"
-                    ? sortConfig.direction === "asc"
-                      ? "▲"
-                      : "▼"
-                    : "▼"}
-                </span>
-              )}
-            </th>
-            <th onClick={() => handleSort("name")}>
-              Name
-              {enableSorting && (
-                <span className={`sort-indicator ${sortConfig.key === "name" ? "sorted" : ""}`}>
-                  {enableSorting && sortConfig.key === "name"
-                    ? sortConfig.direction === "asc"
-                      ? "▲"
-                      : "▼"
-                    : "▼"}
-                </span>
-              )}
-            </th>
-            <th onClick={() => handleSort("email")}>
-              Email
-              {enableSorting && (
-                <span className={`sort-indicator ${sortConfig.key === "email" ? "sorted" : ""}`}>
-                  {enableSorting && sortConfig.key === "email"
-                    ? sortConfig.direction === "asc"
-                      ? "▲"
-                      : "▼"
-                    : "▼"}
-                </span>
-              )}
-            </th>
-            <th onClick={() => handleSort("phone")}>
-              Phone
-              {enableSorting && (
-                <span className={`sort-indicator ${sortConfig.key === "phone" ? "sorted" : ""}`}>
-                  {enableSorting && sortConfig.key === "phone"
-                    ? sortConfig.direction === "asc"
-                      ? "▲"
-                      : "▼"
-                    : "▼"}
-                </span>
-              )}
-            </th>
+            <th onClick={() => handleSort("id")}> ID </th>
+            <th onClick={() => handleSort("name")}> Name </th>
+            <th onClick={() => handleSort("email")}> Email </th>
+            <th onClick={() => handleSort("phone")}> Phone </th>
             <th onClick={() => handleSort("date")}>
               Date
               {enableSorting && (

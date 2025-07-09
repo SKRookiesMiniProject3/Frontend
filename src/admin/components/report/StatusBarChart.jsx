@@ -22,8 +22,8 @@ const StatusBarChart = ({ data }) => {
   };
 
   const statusLabelMap = {
-    NOT_STARTED: "시작 안함",
-    IN_PROGRESS: "진행중",
+    NOT_STARTED: "시작 전",
+    IN_PROGRESS: "진행 중",
     COMPLETED: "완료",
     CANCELLED: "취소",
     ON_HOLD: "보류",

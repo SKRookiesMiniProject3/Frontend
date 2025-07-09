@@ -34,3 +34,31 @@
   flex-direction: column;
   overflow: visible;
 }
+
+.chart-section {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.chart-section h3 {
+  margin-bottom: 8px;
+}
+
+.chart-box {
+  min-width: 0;
+}
+
+.chart-box.wide {
+  flex: 3;
+}
+
+.chart-box.narrow {
+  flex: 1;
+}
