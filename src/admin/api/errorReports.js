@@ -2,32 +2,6 @@ import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-//최신 에러 리포트 조회
-export const fetchLatestErrorReports = async (token) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/latest`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("최신 에러 리포트 조회 실패:", error);
-    return [];
-  }
-};
-
-//미해결 에러 리포트 조회
-export const fetchUnresolvedErrorReports = async (token) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/errors/unresolved`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("미해결 에러 리포트 조회 실패:", error);
-    return [];
-  }
-};
-
 //일별 에러 리포트 개수 조회
 export const fetchDailyErrorCounts = async (token) => {
   try {
@@ -67,6 +41,78 @@ export const getErrorReportCategoryStats = async (token) => {
   }
 };
 
+//status 별 에러 리포트 목록 조회
+export const fetchReportsByStatus = async (status, token) => {
+  let endpoint = "";
+
+  switch (status) {
+    case "NOT_STARTED":
+      endpoint = "/api/v1/error-reports/list/not-started";
+      break;
+    case "IN_PROGRESS":
+      endpoint = "/api/v1/error-reports/list/in-progress";
+      break;
+    case "COMPLETED":
+      endpoint = "/api/v1/error-reports/list/completed";
+      break;
+    default:
+      endpoint = "/api/v1/error-reports"; // 전체 리스트 (기본)
+  }
+
+  try {
+    const response = await axios.get(`${BASE_URL}${endpoint}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (e) {
+    console.error("리포트 상태별 조회 실패:", e);
+    return [];
+  }
+};
+
+//최신 에러 리포트 조회
+export const fetchLatestErrorReports = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/latest`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("최신 에러 리포트 조회 실패:", error);
+    return [];
+  }
+};
+
+// 기간별 에러 리포트 조회
+export const fetchReportsByDateRange = async (startDate, endDate, token) => {
+  const toKstISOString = (date) => {
+    const offset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - offset).toISOString(); // 밀리초 포함
+  };
+
+  // 종료일을 하루 뒤로 조정 (당일 포함되도록)
+  const adjustedEndDate = new Date(endDate);
+  adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+  adjustedEndDate.setHours(0, 0, 0, 0);
+
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/by-date-range`, {
+      params: {
+        startDate: toKstISOString(startDate),
+        endDate: toKstISOString(adjustedEndDate), // 하루 뒤 날짜로 전송
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("기간별 리포트 조회 실패:", error);
+    return [];
+  }
+};
+
+
 // 에러 상세 조회
 export const fetchErrorReportById = async (id, token) => {
   try {
@@ -81,10 +127,33 @@ export const fetchErrorReportById = async (id, token) => {
 };
 
 //상태 변경
-export const updateErrorStatusById = async (id, status, token) => {
+export const updateErrorStatusById = async (id, status, token, comment = "") => {
+  let url = `${BASE_URL}/api/v1/error-reports/${id}/status`;
+
+  // 상태별로 URL 변경
+  switch (status) {
+    case "NOT_STARTED":
+      url += "/not-started";
+      break;
+    case "IN_PROGRESS":
+      url += "/in-progress";
+      break;
+    case "COMPLETED":
+      url += `/completed`;
+      if (comment) {
+        // 완료 상태일 때만 쿼리로 코멘트 추가
+        url += `?completionComment=${encodeURIComponent(comment)}`;
+      }
+      break;
+    default:
+      return { success: false, error: "지원하지 않는 상태입니다." };
+  }
+
   try {
-    const response = await axios.patch(`${BASE_URL}/api/v1/error-reports/${id}/status`, { status }, {
-      headers: { Authorization: `Bearer ${token}` },
+    const response = await axios.patch(url, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return { success: true, data: response.data };
   } catch (e) {
@@ -95,9 +164,13 @@ export const updateErrorStatusById = async (id, status, token) => {
 //comment 입력
 export const updateErrorCommentById = async (id, comment, token) => {
   try {
-    const response = await axios.patch(`${BASE_URL}/api/v1/error-reports/${id}/comment`, { comment }, {
+    const encoded = encodeURIComponent(comment);
+    const url = `${BASE_URL}/api/v1/error-reports/${id}/comment?comment=${encoded}`;
+
+    const response = await axios.patch(url, null, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
     return { success: true, data: response.data };
   } catch (e) {
     return { success: false, error: e };

@@ -47,10 +47,10 @@ const ErrorReportDetail = () => {
   };
 
   const handleStatusUpdate = async () => {
-    const result = await updateErrorStatusById(report.id, status, accessToken); // PATCH 호출
+    const result = await updateErrorStatusById(report.id, status, accessToken, comment);
     if (result?.success) {
       alert("상태가 업데이트되었습니다.");
-      setSelectedReport((prev) => ({ ...prev, reportStatus: status }));
+      setSelectedReport(result.data.data);
     } else {
       alert("상태 업데이트 실패");
     }
@@ -69,7 +69,7 @@ const ErrorReportDetail = () => {
     const result = await updateErrorCommentById(report.id, comment, accessToken); // PATCH 호출
     if (result?.success) {
       alert("코멘트가 저장되었습니다.");
-      setSelectedReport((prev) => ({ ...prev, reportComment: comment }));
+      setSelectedReport(result.data.data);
     } else {
       alert("코멘트 저장 실패");
     }
@@ -83,7 +83,7 @@ const ErrorReportDetail = () => {
       const result = await deleteErrorReportById(report.id, accessToken);
       if (result?.success) {
         alert("리포트가 성공적으로 삭제되었습니다.");
-        navigate("/admin/error-report"); // 리스트 페이지 등으로 이동
+        navigate("/admin/error-report");
       } else {
         alert("삭제에 실패했습니다.");
       }

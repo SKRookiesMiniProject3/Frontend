@@ -106,8 +106,6 @@ const ErrorReportTable = ({
             <button onClick={() => onPageChange(1, "NOT_STARTED")}>시작 안함</button>
             <button onClick={() => onPageChange(1, "IN_PROGRESS")}>진행중</button>
             <button onClick={() => onPageChange(1, "COMPLETED")}>완료</button>
-            <button onClick={() => onPageChange(1, "CANCELLED")}>취소</button>
-            <button onClick={() => onPageChange(1, "ON_HOLD")}>보류</button>
           </div>
         )}
       </div>
