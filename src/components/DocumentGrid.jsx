@@ -10,10 +10,10 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
   const userRoleId = ROLE_NAME_TO_ID[userRoleName] || 0;
 
   const handleClickCard = async (doc) => {
-    const docRoleId = Number(doc.readRoleId);
-    const isLocked = doc.readRoleId !== undefined && !isNaN(docRoleId) && userRoleId < docRoleId;
+    const docRoleId = Number(doc.readRole?.id);
+    const isLocked = doc.readRole !== undefined && !isNaN(docRoleId) && userRoleId < docRoleId;
 
-    console.log(`📝 ${doc.fileName}, readRoleId: ${doc.readRoleId}, userRoleId: ${userRoleId}, locked: ${isLocked}`);
+    console.log(`📝 ${doc.fileName}, readRoleId: ${doc.readRole?.id}, userRoleId: ${userRoleId}, locked: ${isLocked}`);
 
     if (mode === "view") {
       if (isLocked) {
@@ -34,8 +34,10 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
   return (
     <div className={styles.grid}>
       {documents.map((doc) => {
-        const docRoleId = Number(doc.readRoleId);
-        
+        const docRoleId = Number(doc.readRole?.id);
+        const isLocked = doc.readRole !== undefined && !isNaN(docRoleId) && userRoleId < docRoleId;
+
+        const categoryKey = doc.categories?.[0]?.name?.toUpperCase().replace(/ /g, '_') || 'DEFAULT';
 
         return (
           <div
@@ -46,7 +48,9 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
             <DocumentCard
               fileName={doc.fileName}
               createdAt={doc.createdAt}
-                createdRole={doc.createdRole}
+              createdRole={doc.createdRole}
+              locked={isLocked}
+              categoryKey={categoryKey}
             />
           </div>
         );
