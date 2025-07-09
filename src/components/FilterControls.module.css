@@ -1,0 +1,28 @@
+.controls {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.dateRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.dateItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.tilde {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.dateInput {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 0.3rem;
+}

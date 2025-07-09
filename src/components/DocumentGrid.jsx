@@ -35,7 +35,7 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
     <div className={styles.grid}>
       {documents.map((doc) => {
         const docRoleId = Number(doc.readRoleId);
-        const isLocked = doc.readRoleId !== undefined && !isNaN(docRoleId) && userRoleId < docRoleId;
+        
 
         return (
           <div
@@ -46,7 +46,7 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
             <DocumentCard
               fileName={doc.fileName}
               createdAt={doc.createdAt}
-              locked={isLocked}
+                createdRole={doc.createdRole}
             />
           </div>
         );
