@@ -22,16 +22,16 @@ const DocumentViewer = () => {
   const [activeMode, setActiveMode] = useState("열람");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const { logout, user } = useAuthStore();
-  const navigate = useNavigate();
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const documentsPerPage = 10;
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [sortOrder, setSortOrder] = useState("latest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isAdminPage, setIsAdminPage] = useState(false);
+
+  const { logout, user } = useAuthStore();
+  const navigate = useNavigate();
+
+  const documentsPerPage = 10;
 
   const sortedDocs = [...documents].sort((a, b) => {
     return sortOrder === 'latest' ? b.id - a.id : a.id - b.id;
@@ -91,14 +91,14 @@ const DocumentViewer = () => {
     setCurrentPage(page);
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleAdminPage = () => {
+  const handleToggleAdminPage = () => {
     if (user?.role === "CEO") {
-      navigate("/admin");
+      if (!isAdminPage) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+      setIsAdminPage(!isAdminPage);
     } else {
       alert("관리자만 접근할 수 있습니다.");
       window.location.reload();
@@ -107,13 +107,21 @@ const DocumentViewer = () => {
 
   return (
     <div className="viewer-container">
-      <Header />
+      <Header
+        onNavigateAdminPage={handleToggleAdminPage}
+        isAdminPage={isAdminPage}
+      />
+
       <div className="main-content">
         <Sidebar
           activeMain={activeMode}
           onSelectMain={setActiveMode}
           activeCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          onLogout={() => {
+            logout();
+            navigate("/");
+          }}
         />
 
         <div className="content-area">
@@ -138,16 +146,6 @@ const DocumentViewer = () => {
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
-        </div>
-
-        <div className="content-toolbar">
-          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
-          {showMenu && (
-            <div className="dropdown-menu">
-              <button onClick={handleAdminPage}>관리자 페이지</button>
-              <button onClick={handleLogout}>로그아웃</button>
-            </div>
-          )}
         </div>
       </div>
 

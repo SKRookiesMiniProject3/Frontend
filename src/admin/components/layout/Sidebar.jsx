@@ -6,13 +6,13 @@ import {
   Users,
   FileText,
   ShieldAlert,
-  Menu as MenuIcon
+  Menu as MenuIcon,
+  LogOut
 } from "lucide-react";
 
-const Sidebar = ({ selectedMode, onSelectMode }) => {
+const Sidebar = ({ selectedMode, onSelectMode, onLogout }) => {
   const [activeMain, setActiveMain] = useState(selectedMode || "대시보드");
   const [collapsed, setCollapsed] = useState(false);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +59,13 @@ const Sidebar = ({ selectedMode, onSelectMode }) => {
             {!collapsed && <span>{menu.label}</span>}
           </button>
         ))}
+      </div>
+
+      <div className={styles.logoutSection}>
+        <button className={styles.menuItem} onClick={onLogout}>
+          <LogOut size={18} />
+          {!collapsed && <span>로그아웃</span>}
+        </button>
       </div>
     </div>
   );
