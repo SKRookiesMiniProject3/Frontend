@@ -14,7 +14,6 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
     const docRoleId = Number(doc.readRole?.id);
     const isLocked = doc.readRole !== undefined && !isNaN(docRoleId) && userRoleId < docRoleId;
 
-    console.log(`📝 ${doc.fileName}, readRoleId: ${doc.readRole?.id}, userRoleId: ${userRoleId}, locked: ${isLocked}`);
 
     if (mode === "view") {
       if (isLocked) {

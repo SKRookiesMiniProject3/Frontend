@@ -27,12 +27,15 @@ const DocumentViewer = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const documentsPerPage = 8;
+  const documentsPerPage = 10;
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [sortOrder, setSortOrder] = useState("latest");
 
-  const sortedDocs = [...documents].sort((a, b) => b.id - a.id);
+  const sortedDocs = [...documents].sort((a, b) => {
+    return sortOrder === 'latest' ? b.id - a.id : a.id - b.id;
+  });
 
   const totalPages = Math.ceil(sortedDocs.length / documentsPerPage);
   const paginatedDocs = sortedDocs.slice(
@@ -120,8 +123,9 @@ const DocumentViewer = () => {
               endDate={endDate}
               setStartDate={setStartDate}
               setEndDate={setEndDate}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
             />
-            
           </div>
 
           <DocumentGrid
@@ -155,4 +159,3 @@ const DocumentViewer = () => {
 };
 
 export default DocumentViewer;
-

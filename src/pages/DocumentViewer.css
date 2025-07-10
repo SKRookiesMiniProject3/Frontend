@@ -15,7 +15,7 @@
 .content-area {
   flex: 1;
   width: 100%;     /* ✅ 기본 */
-  max-width: 100%; /* ✅ 강제 확장 */
+  max-width: 100%; 
   padding: 24px 32px;
   overflow-y: auto;
   display: flex;
@@ -37,8 +37,7 @@
   font-size: 20px;
   cursor: pointer;
   line-height: 1;
-  padding-right: 0px;
-  padding-bottom: 20px;
+  padding: 4px;
 }
 
 .menu-button:focus,
@@ -97,5 +96,4 @@
 .refresh-btn:active {
   background-color: #e0e0e0;
 }
-
 

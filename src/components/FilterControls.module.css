@@ -1,50 +1,85 @@
 .controls {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-  padding: 12px 0;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 15px;
+  margin-right: 10px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dateWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .dateRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background-color: #fafafa;
-  padding: 12px 16px;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.dateItem {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dateItem label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #444;
+  gap: 10px;
 }
 
 .dateInput {
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 6px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  outline: none;
-  transition: border-color 0.2s ease;
+  font-size: 14px;
+  width: 130px;
+  transition: border 0.2s ease;
 }
 
 .dateInput:focus {
-  border-color: #7c4dff;
-  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.15);
+  border: 1px solid #7e57c2;
+  outline: none;
 }
 
 .tilde {
-  font-size: 18px;
-  font-weight: bold;
-  color: #888;
-  margin-top: 20px;
+  font-size: 16px;
+  margin: 0 4px;
+  color: #555;
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sortButtonGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.sortButton {
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sortButton:hover {
+  background-color: #e0e0e0;
+}
+
+.sortButton:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.active {
+  background-color: #d1c4e9;
+  color: #4a148c;
+  border-color: #b39ddb;
+  font-weight: 600;
 }
