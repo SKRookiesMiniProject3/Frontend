@@ -7,6 +7,7 @@ const errorReportStore = create((set, get) => ({
   totalCount: 0,          //전체 에러 리포트 수
   weeklyCount: 0,         //주간 에러 리포트 수
   unprocessedCount: 0,    //미처리 리포트 수
+  completedCount: 0,      //완료된 리포트 수
 
   setReports: (reportList) => set({ reports: reportList }),
   setSelectedReport: (report) => set({ selectedReport: report }),
@@ -14,6 +15,7 @@ const errorReportStore = create((set, get) => ({
   setTotalCount: (count) => set({ totalCount: count }),
   setWeeklyCount: (count) => set({ weeklyCount: count }),
   setUnprocessedCount: (count) => set({ unprocessedCount: count }),
+  setCompletedCount: (count) => set({ completedCount: count }),
 
   updateReportById: (id, updates) => {
     set({

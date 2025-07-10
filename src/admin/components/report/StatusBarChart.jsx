@@ -25,10 +25,15 @@ const StatusBarChart = ({ data }) => {
     COMPLETED: "완료",
   };
 
-  const formattedData = Object.entries(data).map(([key, value]) => ({
-    status: key,
-    count: value,
-  }));
+  const statusOrder = ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"];
+
+  const formattedData = statusOrder
+    .filter((status) => data[status] !== undefined)
+    .map((status) => ({
+      status,
+      count: data[status],
+    }));
+
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
