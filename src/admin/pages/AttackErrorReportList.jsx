@@ -9,6 +9,8 @@ import errorReportStore from "../stores/errorReportStore";
 import AttackErrorReportTable from '../components/report/AttackErrorReportTable';
 import { fetchAttackErrorReports, fetchReportsByDateRange } from "../api/errorReports";
 import FilterControls from "../../components/FilterControls";
+import AttackErrorReportChart from "../components/report/AttackErrorReportChart";
+
 
 const AttackErrorReportList = () => {
   const { accessToken, logout } = useAuthStore();
@@ -117,7 +119,6 @@ const AttackErrorReportList = () => {
             </button>
           </div>
 
-
           <AttackErrorReportTable
             showSeeMore={false}
             usePagination={true}
@@ -129,6 +130,10 @@ const AttackErrorReportList = () => {
             statusFilter={statusFilter}
             onSortReset={handleReset}
           />
+
+          <div className="chart-wrapper">
+            <AttackErrorReportChart />
+          </div>
 
           <div className="content-toolbar">
             <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
