@@ -23,6 +23,8 @@ const FilterControls = ({
             dateFormat="yyyy-MM-dd"
             className={styles.dateInput}
             placeholderText="시작일"
+            portalId="root-portal"  
+
           />
           <span className={styles.tilde}>~</span>
           <DatePicker
@@ -31,6 +33,8 @@ const FilterControls = ({
             dateFormat="yyyy-MM-dd"
             className={styles.dateInput}
             placeholderText="종료일"
+              portalId="root-portal"  
+
           />
         </div>
       </div>

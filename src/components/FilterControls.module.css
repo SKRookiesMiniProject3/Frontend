@@ -25,6 +25,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .dateInput {
@@ -33,7 +34,12 @@
   border-radius: 8px;
   font-size: 14px;
   width: 130px;
-  transition: border 0.2s ease;
+  line-height: 1.4;
+  box-sizing: border-box;
+  white-space: nowrap;           /* ✅ 줄바꿈 방지 */
+  overflow: hidden;              /* ✅ 내용 넘치면 숨김 */
+  text-overflow: ellipsis;       /* ✅ 말줄임 처리 */
+  transition: border 0.2s ease, background-color 0.2s ease;
 }
 
 .dateInput:focus {
@@ -45,6 +51,7 @@
   font-size: 16px;
   margin: 0 4px;
   color: #555;
+  white-space: nowrap;           /* ✅ '~' 기호 위치 안정 */
 }
 
 .sortWrapper {
