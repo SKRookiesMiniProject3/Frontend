@@ -37,7 +37,8 @@
   font-size: 20px;
   cursor: pointer;
   line-height: 1;
-  padding: 4px;
+  padding-right: 0px;
+  padding-bottom: 20px;
 }
 
 .menu-button:focus,
@@ -96,4 +97,5 @@
 .refresh-btn:active {
   background-color: #e0e0e0;
 }
+
 

@@ -133,29 +133,39 @@ const ErrorReportTable = ({
         </thead>
         <tbody>
           {paginatedReports.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.reportTitle}</td>
-              <td>{row.reportCategory}</td>
-              <td>
-                <div className={`status ${row.reportStatus}`}>
-                  {row.reportStatus}
-                </div>
-              </td>
-              <td>{formatDate(row.created_dt)}</td>
-              <td>
-                <button
-                  className="check-btn"
-                  onClick={() => {
-                    navigate(`/admin/error-report-detail/${row.id}`, {
-                      state: { report: row },
-                    });
-                  }}
-                >
-                  확인
-                </button>
-              </td>
-            </tr>
+<tr
+  key={row.id}
+  onClick={() => {
+    navigate(`/admin/error-report-detail/${row.id}`, {
+      state: { report: row },
+    });
+  }}
+  className="clickable-row"
+>
+  <td>{row.id}</td>
+  <td>{row.reportTitle}</td>
+  <td>{row.reportCategory}</td>
+  <td>
+    <div className={`status ${row.reportStatus}`}>
+      {row.reportStatus}
+    </div>
+  </td>
+  <td>{formatDate(row.created_dt)}</td>
+  <td>
+    {/* <button
+      className="check-btn"
+      onClick={(e) => {
+        e.stopPropagation(); // 부모 <tr> 클릭 방지
+        navigate(`/admin/error-report-detail/${row.id}`, {
+          state: { report: row },
+        });
+      }}
+    >
+      확인
+    </button> */}
+  </td>
+</tr>
+
           ))}
         </tbody>
       </table>
@@ -171,3 +181,4 @@ const ErrorReportTable = ({
 };
 
 export default ErrorReportTable;
+
