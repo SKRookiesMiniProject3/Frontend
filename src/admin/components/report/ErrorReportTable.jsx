@@ -113,8 +113,6 @@ const ErrorReportTable = ({
             <button onClick={() => onPageChange(1, "NOT_STARTED")}>시작 안함</button>
             <button onClick={() => onPageChange(1, "IN_PROGRESS")}>진행중</button>
             <button onClick={() => onPageChange(1, "COMPLETED")}>완료</button>
-            <button onClick={() => onPageChange(1, "CANCELLED")}>취소</button>
-            <button onClick={() => onPageChange(1, "ON_HOLD")}>보류</button>
           </div>
         )}
       </div>
@@ -133,38 +131,38 @@ const ErrorReportTable = ({
         </thead>
         <tbody>
           {paginatedReports.map((row) => (
-<tr
-  key={row.id}
-  onClick={() => {
-    navigate(`/admin/error-report-detail/${row.id}`, {
-      state: { report: row },
-    });
-  }}
-  className="clickable-row"
->
-  <td>{row.id}</td>
-  <td>{row.reportTitle}</td>
-  <td>{row.reportCategory}</td>
-  <td>
-    <div className={`status ${row.reportStatus}`}>
-      {row.reportStatus}
-    </div>
-  </td>
-  <td>{formatDate(row.created_dt)}</td>
-  <td>
-    {/* <button
-      className="check-btn"
-      onClick={(e) => {
-        e.stopPropagation(); // 부모 <tr> 클릭 방지
-        navigate(`/admin/error-report-detail/${row.id}`, {
-          state: { report: row },
-        });
-      }}
-    >
-      확인
-    </button> */}
-  </td>
-</tr>
+            <tr
+              key={row.id}
+              onClick={() => {
+                navigate(`/admin/error-report-detail/${row.id}`, {
+                  state: { report: row },
+                });
+              }}
+              className="clickable-row"
+            >
+              <td>{row.id}</td>
+              <td>{row.reportTitle}</td>
+              <td>{row.reportCategory}</td>
+              <td>
+                <div className={`status ${row.reportStatus}`}>
+                  {row.reportStatus}
+                </div>
+              </td>
+              <td>{formatDate(row.created_dt)}</td>
+              <td>
+                {/* <button
+                  className="check-btn"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 부모 <tr> 클릭 방지
+                    navigate(`/admin/error-report-detail/${row.id}`, {
+                      state: { report: row },
+                    });
+                  }}
+                >
+                  확인
+                </button> */}
+              </td>
+            </tr>
 
           ))}
         </tbody>

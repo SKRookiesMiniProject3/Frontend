@@ -100,8 +100,6 @@ const AttackErrorReportTable = ({
             <button onClick={() => onPageChange(1, "NOT_STARTED")}>시작 안함</button>
             <button onClick={() => onPageChange(1, "IN_PROGRESS")}>진행중</button>
             <button onClick={() => onPageChange(1, "COMPLETED")}>완료</button>
-            <button onClick={() => onPageChange(1, "CANCELLED")}>취소</button>
-            <button onClick={() => onPageChange(1, "ON_HOLD")}>보류</button>
           </div>
         )}
       </div>
@@ -111,12 +109,8 @@ const AttackErrorReportTable = ({
             <th style={{ width: "6%" }}>ID</th>
             <th style={{ width: "32%" }}>Title</th>
             <th>Category</th>
-            <th onClick={() => handleSort("reportStatus")} style={{ cursor: "pointer" }}>
-              Status {enableSorting && sortConfig.key === "reportStatus" && (sortConfig.direction === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("created_dt")} style={{ cursor: "pointer" }}>
-              Date {enableSorting && sortConfig.key === "created_dt" && (sortConfig.direction === "asc" ? "▲" : "▼")}
-            </th>
+            <th onClick={() => handleSort("reportStatus")}>Status {enableSorting && sortConfig.key === "reportStatus" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
+            <th onClick={() => handleSort("created_dt")}>Date {enableSorting && sortConfig.key === "created_dt" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
             <th style={{ width: "10%" }}></th>
           </tr>
         </thead>
