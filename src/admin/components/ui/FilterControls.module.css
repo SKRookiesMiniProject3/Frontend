@@ -6,14 +6,6 @@
   flex-wrap: wrap;
 }
 
-.label {
-  font-weight: 600;
-  font-size: 15px;
-  margin-right: 10px;
-  color: #333;
-  white-space: nowrap;
-}
-
 .dateWrapper {
   display: flex;
   align-items: center;

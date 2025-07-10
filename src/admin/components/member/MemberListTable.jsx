@@ -77,6 +77,7 @@ const MemberListTable = ({
     }));
   };
 
+  //회원 조회를 위한 선택 핸들러
   const handleCheck = (id, checked) => {
     const updated = users.map((m) =>
       m.id === id ? { ...m, checked } : m
@@ -88,13 +89,13 @@ const MemberListTable = ({
     <div className="member-list-container">
       <div className="table-header">
         <h2 className="table-title">Member List</h2>
-        {/* AdminDashboard.jsx일 때만 See More 버튼 활성화 */}
         {showSeeMore && (
           <button className="see-more-btn" onClick={() => navigate('/admin/member-crud')}>
             See More
           </button>
         )}
       </div>
+      
       {/* 회원 목록 테이블 */}
       <div className="member-table-wrapper">
       <table className="member-list-table">

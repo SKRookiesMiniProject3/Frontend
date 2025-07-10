@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from '../../components/Header'; // ✅ 공통 Header로 변경
-import Sidebar from '../components/layout/Sidebar';
-import "../styles/ErrorReportDetail.css";
-import useAuthStore from "../../stores/authStore";
-import errorReportStore from "../stores/errorReportStore";
+
 import { fetchErrorReportById } from "../api/errorReports";
 import { updateErrorStatusById, updateErrorCommentById, deleteErrorReportById } from "../api/errorReports";
+
+import useAuthStore from "../../stores/authStore";
+import errorReportStore from "../stores/errorReportStore";
+
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
+import Sidebar from '../components/layout/Sidebar';
+
+import "../styles/ErrorReportDetail.css";
 
 const ErrorReportDetail = () => {
   const { selectedReport, setSelectedReport } = errorReportStore();
   const { id } = useParams();
-  const { accessToken } = useAuthStore();
+  const { logout, accessToken } = useAuthStore();
+
+  const navigate = useNavigate();
+
   const [mode, setMode] = useState("리포트 상세보기");
 
   const [status, setStatus] = useState("");
   const [comment, setComment] = useState("");
-  const { logout } = useAuthStore();
-  const navigate = useNavigate();
 
+  //해당 id의 에러 리포트 정보
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetchErrorReportById(id, accessToken);
@@ -39,15 +45,18 @@ const ErrorReportDetail = () => {
 
   const report = selectedReport;
 
+  //File Path를 위한 url 설정
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const fullPath = `${baseUrl}${report.reportPath}`;
 
+  //날짜 포맷팅
   const formatDate = (dateString) => {
     if (!dateString) return "정보 없음";
     const date = new Date(dateString);
     return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   };
 
+  //status 변경 핸들러
   const handleStatusUpdate = async () => {
     const result = await updateErrorStatusById(report.id, status, accessToken, comment);
     if (result?.success) {
@@ -58,12 +67,14 @@ const ErrorReportDetail = () => {
     }
   };
 
+  //클라이언트 페이지 이동을 위한 핸들러
   const handleToggleClientPage = () => {
     navigate("/");
   };
 
+  //코멘트 저장 핸들러
   const handleCommentSave = async () => {
-    const result = await updateErrorCommentById(report.id, comment, accessToken); // PATCH 호출
+    const result = await updateErrorCommentById(report.id, comment, accessToken);
     if (result?.success) {
       alert("코멘트가 저장되었습니다.");
       setSelectedReport(result.data.data);
@@ -72,6 +83,7 @@ const ErrorReportDetail = () => {
     }
   };
 
+  //에러 리포트 삭제 핸들러
   const handleDelete = async () => {
     const confirmed = window.confirm("정말로 이 에러 리포트를 삭제하시겠습니까?");
     if (!confirmed) return;
@@ -100,12 +112,14 @@ const ErrorReportDetail = () => {
         <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
           <div className="detail-container">
+            
             <div className="detail-header">
               <h2 className="detail-title">{report.reportTitle}</h2>
               <button className="delete-btn" onClick={handleDelete}>
                 🗑️ 삭제하기
               </button>
             </div>
+
             <div className="info-grid">
               <div style={{ lineHeight: '1.8', fontSize: '16px' }}>
                 <p style={{ marginBottom: '10px' }}>

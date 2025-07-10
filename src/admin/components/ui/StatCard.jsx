@@ -15,7 +15,7 @@ const StatCard = ({ title, count, max, color }) => {
             className="progress-bar-fill"
             style={{
               width: `${percent}%`,
-              backgroundColor: color || "#3b82f6", // 기본값: 파란색
+              backgroundColor: color || "#3b82f6",
             }}
           />
         </div>

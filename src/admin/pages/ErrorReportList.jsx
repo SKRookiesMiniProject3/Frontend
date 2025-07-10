@@ -1,35 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import 'react-datepicker/dist/react-datepicker.css';
+
+import { fetchDailyErrorCounts, fetchReportsByStatus, fetchLatestErrorReports, fetchReportsByDateRange } from "../api/errorReports";
+
+import useAuthStore from "../../stores/authStore";
+import errorReportStore from "../stores/errorReportStore";
+
+import ErrorReportTable from "../components/report/ErrorReportTable";
+
 import Header from '../../components/Header'; // ✅ 공통 Header로 변경
 import Sidebar from "../components/layout/Sidebar";
-import ErrorReportTable from "../components/report/ErrorReportTable";
 import ReportTrendChart from "../components/report/ReportTrendChart";
-import "../styles/ErrorReportList.css";
-import useAuthStore from "../../stores/authStore";
-import { fetchDailyErrorCounts, fetchReportsByStatus, fetchLatestErrorReports, fetchReportsByDateRange } from "../api/errorReports";
-import errorReportStore from "../stores/errorReportStore";
 import FilterControls from '../components/ui/FilterControls';
+
+import "../styles/ErrorReportList.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 const ErrorReportList = () => {
   const { accessToken } = useAuthStore();
+  const { logout } = useAuthStore();
+  const navigate = useNavigate();
+  const { setReports } = errorReportStore();
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const [statusFilter, setStatusFilter] = useState("");
   const [period, setPeriod] = useState("7");
   const [mode, setMode] = useState("리포트 관리");
-
-  const { logout } = useAuthStore();
-  const navigate = useNavigate();
-
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-
   const [chartData, setChartData] = useState([]);
-  const { setReports } = errorReportStore();
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
+  //날짜별 에러 리포트
   useEffect(() => {
     const loadChartData = async () => {
       try {
@@ -80,12 +83,14 @@ const ErrorReportList = () => {
     return `${month}/${day}`;
   };
 
+  //상태 필터링 옵션
   const statusFilterOptions = {
     "NOT_STARTED": "시작 안함",
     "IN_PROGRESS": "진행중",
     "COMPLETED": "완료"
   };
 
+  //클라이언트 페이지 이동을 위한 핸들러
   const handleToggleClientPage = () => {
     navigate("/");
   };
@@ -109,13 +114,13 @@ const ErrorReportList = () => {
 
   const handleStatusFilter = async (page, status) => {
     setCurrentPage(page);
-    setStatusFilter(status); // UI 필터 상태 유지
+    setStatusFilter(status);
 
     let data;
     if (status) {
       data = await fetchReportsByStatus(status, accessToken);
     } else {
-      data = await fetchLatestErrorReports(accessToken); // 전체 조회
+      data = await fetchLatestErrorReports(accessToken);
     }
 
     const mapped = data.map((r) => ({
@@ -126,6 +131,7 @@ const ErrorReportList = () => {
     setReports(mapped);
   };
 
+  //날짜 선택 핸들러
   const handleDateFilter = async () => {
     if (!startDate || !endDate) {
       alert("시작일과 종료일을 모두 선택해주세요.");
@@ -171,6 +177,7 @@ const ErrorReportList = () => {
               <button className="reset-btn" onClick={handleReset}>🔄 새로고침</button>
             </div>
           </div>
+          
           {/* 날짜 필터 */}
           <div className="date-filter-container">
             <FilterControls

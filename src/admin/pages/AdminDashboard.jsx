@@ -1,37 +1,40 @@
 // src/pages/AdminDashboard.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+
 import { fetchUsers } from '../api/users';
-import Header from '../../components/Header'; // ✅ 공통 Header로 변경
-import Sidebar from '../components/layout/Sidebar';
-import ErrorReportTable from '../components/report/ErrorReportTable';
-import MemberListTable from '../components/member/MemberListTable';
-import StatCard from '../components/ui/StatCard';
-import WeeklyReportChart from '../components/report/WeeklyReportChart';
-import "../styles/AdminDashboard.css";
 import useUserStore from '../stores/userStore';
 import useAuthStore from "../../stores/authStore";
 import errorReportStore from '../stores/errorReportStore';
+
+import ErrorReportTable from '../components/report/ErrorReportTable';
+import MemberListTable from '../components/member/MemberListTable';
+
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
+import Sidebar from '../components/layout/Sidebar';
+import StatCard from '../components/ui/StatCard';
+import WeeklyReportChart from '../components/report/WeeklyReportChart';
 import StatusBarChart from "../components/report/StatusBarChart";
 import CategoryPieChart from "../components/report/CategoryPieChart";
 import { getErrorReportStatusStats, getErrorReportCategoryStats, fetchAttackErrorReportsCount } from "../api/errorReports";
+
+import "../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
   const { users, setUsers } = useUserStore();
   const [mode, setMode] = useState("대시보드");
   const { accessToken, logout } = useAuthStore();
-  const navigate = useNavigate();
   const { reports } = errorReportStore();
+
+  const navigate = useNavigate();
 
   const [totalCount, setTotalCount] = useState(0);
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [unprocessedCount, setUnprocessedCount] = useState(0);
   const [weeklyReportCounts, setWeeklyReportCounts] = useState([0, 0, 0, 0]);
   const [completedCount, setCompletedCount] = useState(0);
-
   const [statusStats, setStatusStats] = useState({});
   const [categoryStats, setCategoryStats] = useState({});
-
   const [attackReportCount, setAttackReportCount] = useState(0);
 
   const isThisWeek = (dateString) => {
@@ -53,6 +56,7 @@ const AdminDashboard = () => {
     return Math.ceil(adjustedDate / 7);
   };
 
+  //사용자 정보
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
@@ -76,6 +80,7 @@ const AdminDashboard = () => {
     loadDashboardData();
   }, []);
 
+  //StatCard에 출력할 정보
   useEffect(() => {
     const calcStats = () => {
       const total = reports.length;
@@ -102,6 +107,7 @@ const AdminDashboard = () => {
     calcStats();
   }, [reports]);
 
+  //에러 리포트
   useEffect(() => {
     const fetchStats = async () => {
       const statusRes = await getErrorReportStatusStats(accessToken);
@@ -116,6 +122,7 @@ const AdminDashboard = () => {
     fetchStats();
   }, [accessToken]);
 
+  //공격 에러 리포트
   useEffect(() => {
     const loadAttackReportStats = async () => {
       try {
@@ -124,13 +131,14 @@ const AdminDashboard = () => {
           setAttackReportCount(res.data);
         }
       } catch (error) {
-        console.error("❌ 공격 리포트 통계 fetch 실패:", error);
+        console.error("공격 리포트 통계 fetch 실패:", error);
       }
     };
 
     if (accessToken) loadAttackReportStats();
   }, [accessToken]);
 
+  //클라이언트 페이지 이동을 위한 핸들러
   const handleToggleClientPage = () => {
     navigate("/");
   };
@@ -144,6 +152,7 @@ const AdminDashboard = () => {
       <div className="main-content">
         <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
+
           {/* 합계 카드 */}
           <div className="stat-card-container">
             <StatCard title="Total Error Report Count" count={totalCount} max={totalCount} color="#22c55e" />
@@ -167,7 +176,6 @@ const AdminDashboard = () => {
               <h3>Report Statistics by Status</h3>
               <StatusBarChart data={statusStats} />
             </div>
-
             <div className="chart-box narrow">
               <h3>Report Statistics by Category</h3>
               <CategoryPieChart data={categoryStats} />
@@ -175,6 +183,7 @@ const AdminDashboard = () => {
           </div>
 
           <MemberListTable members={users} limit={5} showCheck={false} enableSorting={false}/>
+        
         </div>
       </div>
     </div>

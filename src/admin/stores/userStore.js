@@ -4,7 +4,6 @@ const useUserStore = create((set, get) => ({
   users: [],
   selectedUser: null,
 
-  //전체 목록 세팅
   setUsers: (userList) => set({ users: userList }),
   setSelectedUser: (user) => set({ selectedUser: user }),
 

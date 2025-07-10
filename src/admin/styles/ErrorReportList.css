@@ -4,7 +4,6 @@
   margin-bottom: 20px;
 }
 
-/* 상태 필터 버튼 컨테이너 */
 .status-filter-container {
   display: flex;
   align-items: center;
@@ -70,14 +69,6 @@
 .filter-buttons .filter-btn.active {
   background-color: #6366f1;
   color: white;
-}
-
-.status-filter-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
 }
 
 .chart-container {
