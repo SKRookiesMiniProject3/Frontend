@@ -117,12 +117,6 @@
   color: #4338ca;
 }
 
-.check-all-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .view-btn {
   background: #6366f1;
   color: #fff;

@@ -1,28 +1,31 @@
 import React, { useState, useEffect }  from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers } from '../api/users';
-import Header from '../../components/Header'; // ✅ 공통 Header로 변경
-import Sidebar from '../components/layout/Sidebar';
-import MemberListTable from '../components/member/MemberListTable';
-import MemberListToolbar from '../components/member/MemberListToolbar';
-import MemberViewForm from "../components/member/MemberViewForm";
+
 import useUserStore from '../stores/userStore';
 import useAuthStore from "../../stores/authStore";
+
+import MemberListTable from '../components/member/MemberListTable';
+
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
+import Sidebar from '../components/layout/Sidebar';
+import MemberListToolbar from '../components/member/MemberListToolbar';
+import MemberViewForm from "../components/member/MemberViewForm";
 
 const MemberCRUD = () => {
   const users = useUserStore((state) => state.users);
   const setUsers = useUserStore((state) => state.setUsers);
+
+  const { accessToken, logout } = useAuthStore();
+  const navigate = useNavigate();
   
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
   const [mode, setMode] = useState("회원관리");
-
-  const { accessToken, logout } = useAuthStore();
-  const navigate = useNavigate();
-
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
+  //회원 정보
   useEffect(() => {
     if (!accessToken) return;
 
@@ -66,6 +69,7 @@ const MemberCRUD = () => {
     console.log("setSelectedMember:", checked[0]);
   };
 
+  //클라이언트 페이지 이동을 위한 핸들러
   const handleToggleClientPage = () => {
     navigate("/");
   };
@@ -108,7 +112,6 @@ const MemberCRUD = () => {
             sortConfig={sortConfig}
             setSortConfig={setSortConfig}
           />
-
           {selectedMember && (
             <MemberViewForm
               memberId={selectedMember.id}

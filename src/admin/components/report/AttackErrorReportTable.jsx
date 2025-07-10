@@ -23,6 +23,7 @@ const AttackErrorReportTable = ({
   const { reports, setReports } = errorReportStore();
   const navigate = useNavigate();
 
+  //카테고리가 ATTACK인 리포트들만 조회
   useEffect(() => {
     const loadReports = async () => {
       if (!accessToken) return;
@@ -40,6 +41,7 @@ const AttackErrorReportTable = ({
     loadReports();
   }, [accessToken, setReports]);
 
+  //날짜 포맷팅
   const formatDate = (dateString) => {
     if (!dateString) return "날짜 없음";
     const date = new Date(dateString);
@@ -47,11 +49,13 @@ const AttackErrorReportTable = ({
     return `📅 ${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
+  //status 필터링
   const filteredReports = reports.filter((r) => {
     if (statusFilter && r.reportStatus !== statusFilter) return false;
     return true;
   });
 
+  //정렬
   const sortedReports = enableSorting
     ? [...filteredReports].sort((a, b) => {
         if (!sortConfig?.key) return 0;
@@ -77,6 +81,7 @@ const AttackErrorReportTable = ({
 
   const totalPages = Math.ceil(limitedReports.length / itemsPerPage);
 
+  //화살표 정렬
   const handleSort = (key) => {
     if (!enableSorting) return;
     setSortConfig((prev) => ({

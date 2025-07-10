@@ -13,6 +13,7 @@ import errorReportStore from "../../stores/errorReportStore";
 const AttackErrorReportChart = () => {
   const { reports } = errorReportStore();
 
+  //날짜별 공격 에러 리포트 수 count
   const getDailyReportCounts = () => {
     const countMap = {};
 
@@ -30,29 +31,30 @@ const AttackErrorReportChart = () => {
   const dailyCounts = getDailyReportCounts();
 
   return (
-  <div className="chart-wrapper">
-    <div className="chart-container">
-      <h3 style={{ margin: "1rem 0" }}>📈 날짜별 공격 에러 리포트 발생 추이</h3>
-      <div style={{ height: "300px" }}> {/* 그래프 전용 높이 박스 */}
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={dailyCounts}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="count"
-              stroke="#8884d8"
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+    <div className="chart-wrapper">
+      <div className="chart-container">
+        <h3 style={{ margin: "1rem 0" }}>
+          📈 날짜별 공격 에러 리포트 발생 추이
+        </h3>
+        <div style={{ height: "300px" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={dailyCounts}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#8884d8"
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default AttackErrorReportChart;

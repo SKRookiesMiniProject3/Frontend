@@ -1,14 +1,16 @@
-// src/App.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
+import useAuthStore from './stores/authStore';
+
 import LoginPage from './pages/LoginPage';
 import DocumentViewer from './pages/DocumentViewer';
+
 import AdminDashboard from './admin/pages/AdminDashboard';
 import MemberCRUD from './admin/pages/MemberCRUD';
 import ErrorReportList from './admin/pages/ErrorReportList';
 import ErrorReportDetail from './admin/pages/ErrorReportDetail';
 import AttackErrorReportList from './admin/pages/AttackErrorReportList';
-import useAuthStore from './stores/authStore';
 
 const App = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);

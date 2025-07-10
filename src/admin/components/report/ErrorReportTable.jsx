@@ -40,6 +40,7 @@ const ErrorReportTable = ({
     loadReports();
   }, [accessToken, setReports]);
 
+  //날짜 포맷팅
   const formatDate = (dateString) => {
     if (!dateString) return "\ub0a0\uc9dc \uc5c6\uc74c";
 
@@ -49,12 +50,14 @@ const ErrorReportTable = ({
     return `\ud83d\uddd3\ufe0f ${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
+  //카테고리 토글 필터링
   const toggleCategoryFilter = () => {
     setCategoryFilter((prev) =>
       prev === "ALL" ? "VALID" : prev === "VALID" ? "INVALID" : "ALL"
     );
   };
 
+  //valid/invalid 리포트 필터링
   const filteredReports = reports.filter((r) => {
     if (statusFilter && r.reportStatus !== statusFilter) return false;
     if (categoryFilter === "VALID" && r.reportCategory !== "VALID") return false;
@@ -62,6 +65,7 @@ const ErrorReportTable = ({
     return true;
   });
 
+  //정렬
   const sortedReports = enableSorting
     ? [...filteredReports].sort((a, b) => {
         if (!sortConfig?.key) return 0;
@@ -90,6 +94,7 @@ const ErrorReportTable = ({
 
   const totalPages = Math.ceil(limitedReports.length / itemsPerPage);
 
+  //화살표 정렬
   const handleSort = (key) => {
     if (!enableSorting) return;
     setSortConfig((prev) => ({
@@ -150,20 +155,8 @@ const ErrorReportTable = ({
               </td>
               <td>{formatDate(row.created_dt)}</td>
               <td>
-                {/* <button
-                  className="check-btn"
-                  onClick={(e) => {
-                    e.stopPropagation(); // 부모 <tr> 클릭 방지
-                    navigate(`/admin/error-report-detail/${row.id}`, {
-                      state: { report: row },
-                    });
-                  }}
-                >
-                  확인
-                </button> */}
               </td>
             </tr>
-
           ))}
         </tbody>
       </table>

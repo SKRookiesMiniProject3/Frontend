@@ -57,7 +57,7 @@ export const fetchReportsByStatus = async (status, token) => {
       endpoint = "/api/v1/error-reports/list/completed";
       break;
     default:
-      endpoint = "/api/v1/error-reports"; // 전체 리스트 (기본)
+      endpoint = "/api/v1/error-reports";
   }
 
   try {
@@ -88,7 +88,7 @@ export const fetchLatestErrorReports = async (token) => {
 export const fetchReportsByDateRange = async (startDate, endDate, token) => {
   const toKstISOString = (date) => {
     const offset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - offset).toISOString(); // 밀리초 포함
+    return new Date(date.getTime() - offset).toISOString();
   };
 
   // 종료일을 하루 뒤로 조정 (당일 포함되도록)
@@ -112,7 +112,6 @@ export const fetchReportsByDateRange = async (startDate, endDate, token) => {
     return [];
   }
 };
-
 
 // 에러 상세 조회
 export const fetchErrorReportById = async (id, token) => {
@@ -187,19 +186,6 @@ export const deleteErrorReportById = async (id, token) => {
     return response.data;
   } catch (error) {
     console.error(`에러 리포트 ID ${id} 삭제 실패:`, error);
-    return null;
-  }
-};
-
-// 에러 해결 처리
-export const resolveErrorReportById = async (id, token) => {
-  try {
-    const response = await axios.patch(`${BASE_URL}/errors/${id}/resolve`, null, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`에러 리포트 해결 실패:`, error);
     return null;
   }
 };
