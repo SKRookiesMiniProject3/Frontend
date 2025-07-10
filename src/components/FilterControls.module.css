@@ -1,28 +1,50 @@
 .controls {
   display: flex;
   align-items: center;
-  margin-top: 1rem;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 12px 0;
 }
 
 .dateRow {
   display: flex;
-  align-items: flex-end;
-  gap: 1rem;
+  align-items: center;
+  gap: 12px;
+  background-color: #fafafa;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .dateItem {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
-.tilde {
-  font-size: 1.2rem;
-  margin-bottom: 0.4rem;
+.dateItem label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
 }
 
 .dateInput {
-  padding: 0.5rem;
-  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
   border: 1px solid #ccc;
-  margin-top: 0.3rem;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dateInput:focus {
+  border-color: #7c4dff;
+  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.15);
+}
+
+.tilde {
+  font-size: 18px;
+  font-weight: bold;
+  color: #888;
+  margin-top: 20px;
 }

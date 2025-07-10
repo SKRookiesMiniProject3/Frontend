@@ -8,6 +8,34 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: width 0.3s ease;
+}
+
+.collapsed {
+  width: 64px;
+  padding: 16px 8px;
+  align-items: center;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #555;
+  padding: 6px 12px;     /* 좌측 정렬을 위한 패딩 조정 */
+  margin-bottom: 8px;
+  align-self: flex-start; /* 우측 정렬 제거 → 좌측 정렬 */
+  display: flex;
+  align-items: center;
+}
+
+.toggleButton:focus {
+  outline: none;
+  box-shadow: none;
+}
+.toggleButton:hover {
+  background-color: #e0e0e0;
 }
 
 .menuSection {
@@ -16,39 +44,39 @@
   gap: 8px;
 }
 
-.menuItem {
+/* 아이콘 + 텍스트 정렬용 flex 적용 */
+.menuItem, .subItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;             
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 15px;
   text-align: left;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 6px 12px;
   cursor: pointer;
-  transition: background 0.2s;
+  border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background 0.2s, color 0.2s;
 }
 
-.menuItem:hover {
+.menuItem:hover, .subItem:hover {
   background-color: #eaeaea;
 }
+
 .menuItem:focus,
 .subItem:focus {
   outline: none;
 }
 
 .subItem {
-  background: none;
-  border: none;
-  font-size: 15px;
-  text-align: left;
-  padding: 6px 12px;
   border-left: 3px solid transparent;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
   color: #333;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .subItem:hover {
-  background-color: #ececec;
   border-left: 3px solid #b39ddb;
 }
 
@@ -60,10 +88,12 @@
 
 .categoryLabel {
   margin-top: 10px;
-  font-size: 23px;
+  font-size: 18px;
   font-weight: 600;
   color: #111;
   padding-left: 10px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .divider {

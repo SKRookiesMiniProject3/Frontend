@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../../components/Sidebar.module.css";
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  ShieldAlert,
+  Menu as MenuIcon
+} from "lucide-react";
 
 const Sidebar = ({ selectedMode, onSelectMode }) => {
   const [activeMain, setActiveMain] = useState(selectedMode || "대시보드");
+  const [collapsed, setCollapsed] = useState(false);
 
   const navigate = useNavigate();
 
@@ -14,22 +22,30 @@ const Sidebar = ({ selectedMode, onSelectMode }) => {
   }, [selectedMode]);
 
   const menuItems = [
-    { label: "대시보드", path: "/admin" },
-    { label: "회원관리", path: "/admin/member-crud" },
-    { label: "리포트 관리", path: "/admin/error-report" },
-    { label: "공격 리포트 관리", path: "/admin/error-report/attack" },
+    { label: "대시보드", path: "/admin", icon: <LayoutDashboard size={18} /> },
+    { label: "회원관리", path: "/admin/member-crud", icon: <Users size={18} /> },
+    { label: "리포트 관리", path: "/admin/error-report", icon: <FileText size={18} /> },
+    { label: "공격 리포트 관리", path: "/admin/error-report/attack", icon: <ShieldAlert size={18} /> },
   ];
 
   const handleMainClick = (menu) => {
-    console.log("이동 경로 확인:", menu.path);
     setActiveMain(menu.label);
     onSelectMode(menu.label);
     navigate(menu.path);
   };
 
+  const handleToggle = () => {
+    setCollapsed(!collapsed);
+  };
+
   return (
-    <div className={styles.sidebar}>
-      {/* Main 메뉴 */}
+    <div className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
+      <div className={styles.toggleWrapper}>
+        <button className={styles.toggleButton} onClick={handleToggle}>
+          <MenuIcon size={20} />
+        </button>
+      </div>
+
       <div className={styles.menuSection}>
         {menuItems.map((menu) => (
           <button
@@ -39,7 +55,8 @@ const Sidebar = ({ selectedMode, onSelectMode }) => {
             }`}
             onClick={() => handleMainClick(menu)}
           >
-            {menu.label}
+            {menu.icon}
+            {!collapsed && <span>{menu.label}</span>}
           </button>
         ))}
       </div>
