@@ -52,11 +52,11 @@
 .status {
   font-weight: bold;
   font-size: 13px;
-  color: #1f2937; /* 진한 회색 텍스트 */
+  color: #1f2937;
   background: none;
   border: none;
   padding: 0;
-    vertical-align: middle;   /* ✅ 세로 중앙 정렬 핵심 */
+  vertical-align: middle;
   margin: 0;
   width: auto;
   height: auto;
@@ -77,16 +77,6 @@
 .status.NOT_STARTED {
   background-color: #fecaca;
   color: #b91c1c;
-}
-
-.status.CANCELLED {
-  background-color: #A0AEC0;
-  color: #2f2e2e;
-}
-
-.status.ON_HOLD {
-  background-color: #84b5fb;
-  color: #1c1fb9;
 }
 
 .role-badge.executive {

@@ -1,6 +1,7 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#0aff60", "#ff0a0a", "#640aff"]; //VALID / ATTACK / INVALID 순서
+const LABELS = ["VALID", "ATTACK", "INVALID"];
 
 const CategoryPieChart = ({ data }) => {
 
@@ -10,7 +11,7 @@ const CategoryPieChart = ({ data }) => {
   }));
 
   return (
-    <div style={{ width: "100%", height: 300 }}>
+    <div style={{ width: "100%", height: 240 }}>
       <ResponsiveContainer>
         <PieChart>
           <Pie
@@ -28,6 +29,23 @@ const CategoryPieChart = ({ data }) => {
           <Tooltip />
         </PieChart>
       </ResponsiveContainer>
+
+      {/* 범례 추가 */}
+      <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "0px" }}>
+        {LABELS.map((label, idx) => (
+          <div key={label} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                backgroundColor: COLORS[idx],
+                borderRadius: "3px",
+              }}
+            />
+            <span style={{ fontSize: "14px" }}>{label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
