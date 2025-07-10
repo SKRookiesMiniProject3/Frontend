@@ -118,12 +118,32 @@ const ErrorReportDetail = () => {
             )}
             </div>
             <div className="info-grid">
-              <p><strong>Report ID:</strong> {report.id}</p>
-              <p><strong>Preview:</strong> {report.reportPreview}</p>
-              <p><strong>Category:</strong> {report.reportCategory} ({report.reportCategoryDescription})</p>
-              <p><strong>Report File Path:</strong> {report.reportPath}</p>
-              <p><strong>Status:</strong> {report.reportStatus} ({report.reportStatusDescription})</p>
-              <p><strong>Date:</strong> {formatDate(report.createdDt)}</p>
+              <div style={{ lineHeight: '1.8', fontSize: '16px' }}>
+                <p style={{ marginBottom: '10px' }}>
+                  📄 <strong style={{ fontSize: '16.5px' }}>Report ID:</strong> {report.id}
+                </p>
+                <p style={{ marginBottom: '10px' }}>
+                  📅 <strong style={{ fontSize: '16.5px' }}>Date:</strong> {formatDate(report.createdDt)}
+                </p>
+                <p style={{ marginBottom: '10px' }}>
+                  🧾 <strong style={{ fontSize: '16.5px' }}>Preview:</strong> {report.reportPreview}
+                </p>
+                <p style={{ marginBottom: '10px' }}>
+                  🗂️ <strong style={{ fontSize: '16.5px' }}>Category:</strong> {report.reportCategory} ({report.reportCategoryDescription})
+                </p>
+                <p style={{ marginBottom: '10px' }}>
+                  📌 <strong style={{ fontSize: '16.5px' }}>Status:</strong>
+                  <span
+                    className={`status-badge ${report.reportStatus}`}
+                    style={{ marginLeft: '6px' }}
+                  >
+                    {report.reportStatusDescription}
+                  </span>
+                </p>
+                <p style={{ marginBottom: '0' }}>
+                  📁 <strong style={{ fontSize: '16.5px' }}>File Path:</strong> {report.reportPath}
+                </p>
+              </div>
             </div>
 
             <div className="edit-section">
