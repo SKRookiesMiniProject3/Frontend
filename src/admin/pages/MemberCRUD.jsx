@@ -1,7 +1,7 @@
 import React, { useState, useEffect }  from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers } from '../api/users';
-import Header from '../components/layout/Header';
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
 import Sidebar from '../components/layout/Sidebar';
 import MemberListTable from '../components/member/MemberListTable';
 import MemberListToolbar from '../components/member/MemberListToolbar';
@@ -18,7 +18,6 @@ const MemberCRUD = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [mode, setMode] = useState("회원관리");
 
-  const [showMenu, setShowMenu] = useState(false);
   const { accessToken, logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -67,12 +66,7 @@ const MemberCRUD = () => {
     console.log("setSelectedMember:", checked[0]);
   };
 
-    const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleMainPage = () => {
+  const handleToggleClientPage = () => {
     navigate("/");
   };
 
@@ -85,9 +79,12 @@ const MemberCRUD = () => {
 
   return (
     <div className="viewer-container">
-      <Header />
+      <Header
+        isAdminPage={true}
+        onNavigateAdminPage={handleToggleClientPage}
+      />
       <div className="main-content">
-        <Sidebar selectedMode={mode} onSelectMode={setMode} />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
           
           {/* 회원 상단 툴바 */}
@@ -119,16 +116,7 @@ const MemberCRUD = () => {
             />
           )}
         </div>
-        {/* 로그아웃, 메인 페이지 이동 */}
-        <div className="content-toolbar">
-          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
-          {showMenu && (
-            <div className="dropdown-menu">
-              <button onClick={handleMainPage}>메인 페이지</button>
-              <button onClick={handleLogout}>로그아웃</button>
-            </div>
-          )}
-        </div>
+
       </div>
     </div>
   );

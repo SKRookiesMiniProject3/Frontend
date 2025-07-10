@@ -28,7 +28,7 @@
 
 .info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   row-gap: 12px;
   column-gap: 20px;
 }
