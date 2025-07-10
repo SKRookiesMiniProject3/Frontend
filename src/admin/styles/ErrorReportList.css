@@ -32,13 +32,6 @@
   color: white;
 }
 
-.chart-container {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
 .filter-buttons {
   display: flex;
   align-items: center;
@@ -95,5 +88,21 @@
   cursor: pointer;
   border-radius: 8px;
   margin-top: 43px;
+}
+
+.chart-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  padding: 0 1rem 1rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.chart-wrapper {
+  width: 100%;
+  padding: 0;
 }
 
