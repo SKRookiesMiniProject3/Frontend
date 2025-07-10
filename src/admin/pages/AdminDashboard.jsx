@@ -27,6 +27,7 @@ const AdminDashboard = () => {
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [unprocessedCount, setUnprocessedCount] = useState(0);
   const [weeklyReportCounts, setWeeklyReportCounts] = useState([0, 0, 0, 0]);
+  const [completedCount, setCompletedCount] = useState(0);
 
   const [statusStats, setStatusStats] = useState({});
   const [categoryStats, setCategoryStats] = useState({});
@@ -79,16 +80,23 @@ const AdminDashboard = () => {
     const calcStats = () => {
       const total = reports.length;
       const weekly = reports.filter(r => isThisWeek(r.created_dt)).length;
-      const unprocessed = reports.filter(r => !r.resolved).length;
+      const unprocessed = reports.filter(
+        (r) => r.reportStatus === "IN_PROGRESS" || r.reportStatus === "NOT_STARTED"
+      ).length;
+      const completed = reports.filter(
+        r => r.reportStatus === "COMPLETED"
+      ).length;
       const weekCounts = [0, 0, 0, 0];
       reports.forEach(r => {
         const w = getWeekOfMonth(r.created_dt);
         if (w >= 1 && w <= 4) weekCounts[w - 1]++;
       });
+
       setTotalCount(total);
       setWeeklyCount(weekly);
       setUnprocessedCount(unprocessed);
       setWeeklyReportCounts(weekCounts);
+      setCompletedCount(completed);
     };
 
     calcStats();
@@ -136,12 +144,13 @@ const AdminDashboard = () => {
       <div className="main-content">
         <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
+          {/* 합계 카드 */}
           <div className="stat-card-container">
-            <StatCard title="Total Error Report Count" count={totalCount} />
-            <StatCard title="Weekly Error Report Count" count={weeklyCount} />
-            <StatCard title="Unprocessed Report Count" count={unprocessedCount} />
-            <StatCard title="Total Member Count" count={users.length} />
-            <StatCard title="🚨 Attack Error Reports" count={attackReportCount} />
+            <StatCard title="Total Error Report Count" count={totalCount} max={totalCount} color="#22c55e" />
+            <StatCard title="Weekly Error Report Count" count={weeklyCount} max={totalCount} color="#22c55e" />
+            <StatCard title="Unprocessed Report Count" count={unprocessedCount} max={totalCount} color="#facc15" />
+            <StatCard title="✅ Completed Reports" count={completedCount} max={totalCount} color="#22c55e" />
+            <StatCard title="🚨 Attack Error Reports" count={attackReportCount} max={totalCount} color="#ef4444" />
           </div>
 
           <div className="report-chart-wrapper">

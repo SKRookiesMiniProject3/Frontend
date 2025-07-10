@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from '../components/layout/Header';
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
 import Sidebar from '../components/layout/Sidebar';
 import "../styles/ErrorReportDetail.css";
 import useAuthStore from "../../stores/authStore";
@@ -16,7 +16,6 @@ const ErrorReportDetail = () => {
 
   const [status, setStatus] = useState("");
   const [comment, setComment] = useState("");
-  const [showMenu, setShowMenu] = useState(false);
   const { logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -40,6 +39,9 @@ const ErrorReportDetail = () => {
 
   const report = selectedReport;
 
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const fullPath = `${baseUrl}${report.reportPath}`;
+
   const formatDate = (dateString) => {
     if (!dateString) return "정보 없음";
     const date = new Date(dateString);
@@ -56,12 +58,7 @@ const ErrorReportDetail = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleMainPage = () => {
+  const handleToggleClientPage = () => {
     navigate("/");
   };
 
@@ -95,9 +92,12 @@ const ErrorReportDetail = () => {
 
   return (
     <div className="viewer-container">
-      <Header />
+      <Header
+        isAdminPage={true}
+        onNavigateAdminPage={handleToggleClientPage}
+      />
       <div className="main-content">
-        <Sidebar selectedMode={mode} onSelectMode={setMode} />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
           <div className="detail-container">
             <div className="detail-header">
@@ -105,17 +105,6 @@ const ErrorReportDetail = () => {
               <button className="delete-btn" onClick={handleDelete}>
                 🗑️ 삭제하기
               </button>
-            </div>
-
-            {/* 로그아웃, 메인 페이지 이동 */}
-            <div className="content-toolbar">
-            <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
-            {showMenu && (
-              <div className="dropdown-menu">
-                <button onClick={handleMainPage}>메인 페이지</button>
-                <button onClick={handleLogout}>로그아웃</button>
-              </div>
-            )}
             </div>
             <div className="info-grid">
               <div style={{ lineHeight: '1.8', fontSize: '16px' }}>
@@ -141,7 +130,10 @@ const ErrorReportDetail = () => {
                   </span>
                 </p>
                 <p style={{ marginBottom: '0' }}>
-                  📁 <strong style={{ fontSize: '16.5px' }}>File Path:</strong> {report.reportPath}
+                  📁 <strong style={{ fontSize: '16.5px' }}>File Path:</strong>{" "}
+                  <a href={fullPath} target="_blank" rel="noopener noreferrer">
+                    {fullPath}
+                  </a>
                 </p>
               </div>
             </div>

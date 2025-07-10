@@ -72,22 +72,12 @@
   color: white;
 }
 
-.status-filter-container,
-.date-filter-container {
+.status-filter-container {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
-}
-
-.date-search-btn {
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  background-color: #ffffff;
-  cursor: pointer;
-  border-radius: 8px;
-  margin-top: 43px;
 }
 
 .chart-container {
@@ -106,3 +96,10 @@
   padding: 0;
 }
 
+.date-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,67 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 15px;
+  margin-right: 10px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dateWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dateRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dateInput {
+  width: 130px;
+  height: 32px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.4;
+  box-sizing: border-box;
+  transition: none;
+}
+
+.dateInput:focus {
+  border: 1px solid #7e57c2;
+  outline: none;
+  box-shadow: none;
+}
+
+.tilde {
+  font-size: 16px;
+  margin: 0 4px;
+  color: #555;
+}
+
+.searchBtn {
+  height: 32px;
+  padding: 6px 12px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.searchBtn:hover {
+  background-color: #e0e0e0;
+}

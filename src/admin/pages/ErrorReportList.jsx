@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Header from "../components/layout/Header";
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
 import Sidebar from "../components/layout/Sidebar";
 import ErrorReportTable from "../components/report/ErrorReportTable";
 import ReportTrendChart from "../components/report/ReportTrendChart";
@@ -10,7 +9,7 @@ import "../styles/ErrorReportList.css";
 import useAuthStore from "../../stores/authStore";
 import { fetchDailyErrorCounts, fetchReportsByStatus, fetchLatestErrorReports, fetchReportsByDateRange } from "../api/errorReports";
 import errorReportStore from "../stores/errorReportStore";
-import FilterControls from "../../components/FilterControls";
+import FilterControls from '../components/ui/FilterControls';
 
 const ErrorReportList = () => {
   const { accessToken } = useAuthStore();
@@ -20,7 +19,6 @@ const ErrorReportList = () => {
   const [period, setPeriod] = useState("7");
   const [mode, setMode] = useState("리포트 관리");
 
-  const [showMenu, setShowMenu] = useState(false);
   const { logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -88,12 +86,7 @@ const ErrorReportList = () => {
     "COMPLETED": "완료"
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleMainPage = () => {
+  const handleToggleClientPage = () => {
     navigate("/");
   };
 
@@ -102,7 +95,9 @@ const ErrorReportList = () => {
     setCurrentPage(1);
     setSortConfig({ key: null, direction: "asc" });
     setStatusFilter("");
-    setPeriod("7");
+    setStartDate("");
+    setEndDate("");
+    setPeriod("all");
 
     const data = await fetchLatestErrorReports(accessToken);
     const mapped = data.map((r) => ({
@@ -111,7 +106,6 @@ const ErrorReportList = () => {
     }));
     setReports(mapped);
   };
-
 
   const handleStatusFilter = async (page, status) => {
     setCurrentPage(page);
@@ -132,12 +126,27 @@ const ErrorReportList = () => {
     setReports(mapped);
   };
 
+  const handleDateFilter = async () => {
+    if (!startDate || !endDate) {
+      alert("시작일과 종료일을 모두 선택해주세요.");
+      return;
+    }
+
+    const data = await fetchReportsByDateRange(startDate, endDate, accessToken);
+    const mapped = data.map((r) => ({ ...r, created_dt: r.createdDt }));
+    setReports(mapped);
+    setCurrentPage(1);
+    setPeriod("custom");
+  };
 
   return (
     <div className="viewer-container">
-      <Header />
+      <Header
+        isAdminPage={true}
+        onNavigateAdminPage={handleToggleClientPage}
+      />
       <div className="main-content">
-        <Sidebar selectedMode={mode} onSelectMode={setMode} />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
           <h2 className="page-title">에러 리포트 관리</h2>
 
@@ -169,27 +178,8 @@ const ErrorReportList = () => {
               endDate={endDate}
               setStartDate={setStartDate}
               setEndDate={setEndDate}
+              onSearchClick={handleDateFilter}
             />
-            <button
-              className="date-search-btn"
-              onClick={async () => {
-                if (!startDate || !endDate) {
-                  alert("시작일과 종료일을 모두 선택해주세요.");
-                  return;
-                }
-
-                const data = await fetchReportsByDateRange(startDate, endDate, accessToken);
-                const mapped = data.map((r) => ({
-                  ...r,
-                  created_dt: r.createdDt,
-                }));
-                setReports(mapped);
-                setCurrentPage(1);
-                setPeriod("custom");
-              }}
-            >
-              📅 선택기간 조회
-            </button>
           </div>
 
           <ErrorReportTable
@@ -227,16 +217,6 @@ const ErrorReportList = () => {
             </button>
           </div>
 
-          {/* 로그아웃, 메인 페이지 이동 */}
-          <div className="content-toolbar">
-          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
-          {showMenu && (
-            <div className="dropdown-menu">
-              <button onClick={handleMainPage}>메인 페이지</button>
-              <button onClick={handleLogout}>로그아웃</button>
-            </div>
-          )}
-          </div>
           {/* 차트 */}
           <div className="chart-container">
             <h3>에러 리포트 일별 합계</h3>
