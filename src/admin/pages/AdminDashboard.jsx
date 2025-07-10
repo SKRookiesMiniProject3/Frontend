@@ -1,7 +1,8 @@
+// src/pages/AdminDashboard.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers } from '../api/users';
-import Header from '../components/layout/Header';
+import Header from '../../components/Header'; // ✅ 공통 Header로 변경
 import Sidebar from '../components/layout/Sidebar';
 import ErrorReportTable from '../components/report/ErrorReportTable';
 import MemberListTable from '../components/member/MemberListTable';
@@ -15,12 +16,9 @@ import StatusBarChart from "../components/report/StatusBarChart";
 import CategoryPieChart from "../components/report/CategoryPieChart";
 import { getErrorReportStatusStats, getErrorReportCategoryStats, fetchAttackErrorReportsCount } from "../api/errorReports";
 
-
 const AdminDashboard = () => {
   const { users, setUsers } = useUserStore();
   const [mode, setMode] = useState("대시보드");
-
-  const [showMenu, setShowMenu] = useState(false);
   const { accessToken, logout } = useAuthStore();
   const navigate = useNavigate();
   const { reports } = errorReportStore();
@@ -35,37 +33,29 @@ const AdminDashboard = () => {
 
   const [attackReportCount, setAttackReportCount] = useState(0);
 
-  //주간 에러 리포트 수 처리 로직
   const isThisWeek = (dateString) => {
     const now = new Date();
     const todayDay = now.getDay();
-    
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - todayDay);
-
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
-
     const targetDate = new Date(dateString);
-
     return targetDate >= startOfWeek && targetDate <= endOfWeek;
   };
 
-  // 특정 날짜가 이번 달 몇 번째 주인지 계산
   const getWeekOfMonth = (dateString) => {
     const date = new Date(dateString);
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const dayOfWeek = firstDay.getDay(); // 0: 일 ~ 6: 토
-
+    const dayOfWeek = firstDay.getDay();
     const adjustedDate = date.getDate() + dayOfWeek;
-    return Math.ceil(adjustedDate / 7); // 1 ~ 5 주차 반환
+    return Math.ceil(adjustedDate / 7);
   };
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
         const users = await fetchUsers(accessToken);
-        console.log("회원 목록 로드 완료", users);
         const formatted = users.map((u) => ({
           id: u.id,
           name: u.username,
@@ -77,7 +67,6 @@ const AdminDashboard = () => {
           checked: false
         }));
         setUsers(formatted);
-
       } catch (error) {
         console.error("대시보드 데이터 로딩 실패:", error);
       }
@@ -96,7 +85,6 @@ const AdminDashboard = () => {
         const w = getWeekOfMonth(r.created_dt);
         if (w >= 1 && w <= 4) weekCounts[w - 1]++;
       });
-
       setTotalCount(total);
       setWeeklyCount(weekly);
       setUnprocessedCount(unprocessed);
@@ -112,53 +100,42 @@ const AdminDashboard = () => {
       if (statusRes?.success) {
         setStatusStats(statusRes.data);
       }
-
       const categoryRes = await getErrorReportCategoryStats(accessToken);
       if (categoryRes?.success) {
         setCategoryStats(categoryRes.data);
       }
     };
-
     fetchStats();
   }, [accessToken]);
 
   useEffect(() => {
-  const loadAttackReportStats = async () => {
-    try {
-      const res = await fetchAttackErrorReportsCount(accessToken);
-      console.log("📊 공격 리포트 통계 응답:", res);
-
-      if (res?.data !== undefined) {
-        setAttackReportCount(res.data);
-      } else {
-        console.warn("⚠️ 'data' 필드 없음", res);
+    const loadAttackReportStats = async () => {
+      try {
+        const res = await fetchAttackErrorReportsCount(accessToken);
+        if (res?.data !== undefined) {
+          setAttackReportCount(res.data);
+        }
+      } catch (error) {
+        console.error("❌ 공격 리포트 통계 fetch 실패:", error);
       }
-    } catch (error) {
-      console.error("❌ 공격 리포트 통계 fetch 실패:", error);
-    }
-  };
+    };
 
-  if (accessToken) loadAttackReportStats();
-}, [accessToken]);
+    if (accessToken) loadAttackReportStats();
+  }, [accessToken]);
 
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleMainPage = () => {
+  const handleToggleClientPage = () => {
     navigate("/");
   };
 
   return (
     <div className="viewer-container">
-      <Header />
+      <Header
+        isAdminPage={true}
+        onNavigateAdminPage={handleToggleClientPage}
+      />
       <div className="main-content">
-        <Sidebar selectedMode={mode} onSelectMode={setMode} />
+        <Sidebar selectedMode={mode} onSelectMode={setMode} onLogout={() => { logout(); navigate("/"); }} />
         <div className="content-area">
-          
-          {/* 합계 카드 */}
           <div className="stat-card-container">
             <StatCard title="Total Error Report Count" count={totalCount} />
             <StatCard title="Weekly Error Report Count" count={weeklyCount} />
@@ -168,15 +145,14 @@ const AdminDashboard = () => {
           </div>
 
           <div className="report-chart-wrapper">
-            {/* 에러 리포트 테이블 */}
             <div className="report-table-container">
               <ErrorReportTable showSeeMore={true} limit={7} enableStatusFilter={false} enableSorting={false}/>
             </div>
-            {/* 주간 에러 리포트 합계 차트 */}
             <div className="weekly-chart-container">
               <WeeklyReportChart counts={weeklyReportCounts} />
             </div>
           </div>
+
           <div className="chart-section">
             <div className="chart-box wide">
               <h3>Report Statistics by Status</h3>
@@ -188,19 +164,8 @@ const AdminDashboard = () => {
               <CategoryPieChart data={categoryStats} />
             </div>
           </div>
-          {/* 회원 리스트 테이블 */}
-          <MemberListTable members={users} limit={5} showCheck={false} enableSorting={false}/>
-        </div>
 
-        {/* 로그아웃, 메인 페이지 이동 */}
-        <div className="content-toolbar">
-          <button className="menu-button" onClick={() => setShowMenu(!showMenu)}>⋮</button>
-          {showMenu && (
-            <div className="dropdown-menu">
-              <button onClick={handleMainPage}>메인 페이지</button>
-              <button onClick={handleLogout}>로그아웃</button>
-            </div>
-          )}
+          <MemberListTable members={users} limit={5} showCheck={false} enableSorting={false}/>
         </div>
       </div>
     </div>

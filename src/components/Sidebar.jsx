@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../stores/authStore";
 import styles from "./Sidebar.module.css";
 import {
   BookOpen,
@@ -9,14 +11,27 @@ import {
   FileBarChart,
   FileSignature,
   FileCode2,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 
-const Sidebar = ({ activeMain, onSelectMain, activeCategory, onSelectCategory }) => {
+const Sidebar = ({
+  activeMain,
+  onSelectMain,
+  activeCategory,
+  onSelectCategory
+}) => {
   const [collapsed, setCollapsed] = useState(false);
+  const { logout } = useAuthStore();         // ✅ 여기서 직접 불러옴
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setCollapsed(!collapsed);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   const categoryList = [
@@ -28,7 +43,6 @@ const Sidebar = ({ activeMain, onSelectMain, activeCategory, onSelectCategory })
     "제품소개서",
   ];
 
-  // 아이콘 매핑
   const categoryIcons = {
     전체: <FileText size={16} />,
     사업계획서: <FileCheck2 size={16} />,
@@ -40,13 +54,12 @@ const Sidebar = ({ activeMain, onSelectMain, activeCategory, onSelectCategory })
 
   return (
     <div className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
-        <div className={styles.toggleWrapper}>
+      <div className={styles.toggleWrapper}>
         <button className={styles.toggleButton} onClick={handleToggle}>
-            <Menu size={22} /> {/* ← 기존 ≡ 대신 아이콘 사용 + 사이즈 키움 */}
+          <Menu size={22} />
         </button>
-        </div>
+      </div>
 
-      {/* Main 메뉴 */}
       <div className={styles.menuSection}>
         {["열람", "등록"].map((menu) => (
           <button
@@ -62,7 +75,6 @@ const Sidebar = ({ activeMain, onSelectMain, activeCategory, onSelectCategory })
 
       <hr className={styles.divider} />
 
-      {/* 보고서 종류 */}
       {!collapsed && <div className={styles.categoryLabel}>보고서 종류</div>}
       <div className={styles.menuSection}>
         {categoryList.map((cat) => (
@@ -75,6 +87,14 @@ const Sidebar = ({ activeMain, onSelectMain, activeCategory, onSelectCategory })
             {!collapsed && <span>{cat}</span>}
           </button>
         ))}
+      </div>
+
+      {/* ✅ 로그아웃 직접 실행 */}
+      <div className={styles.logoutSection}>
+        <button className={styles.logoutButton} onClick={handleLogout}>
+          <LogOut size={20} />
+          {!collapsed && <span>로그아웃</span>}
+        </button>
       </div>
     </div>
   );

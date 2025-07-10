@@ -1,7 +1,7 @@
 .sidebar {
   width: 200px;
   background-color: #f8f8f8;
-  height: 100vh;
+  height: 100%; /* ← 여기만 수정 */
   padding: 16px;
   box-sizing: border-box;
   border-right: 1px solid #ddd;
@@ -10,6 +10,7 @@
   gap: 12px;
   transition: width 0.3s ease;
 }
+
 
 .collapsed {
   width: 64px;
@@ -100,4 +101,27 @@
   border: none;
   border-top: 1px solid #ddd;
   margin: 10px 0;
+}
+.logoutSection {
+  margin-top: auto; /* 하단 고정 */
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  text-align: left;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: #000000;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #fce4ec;
 }
