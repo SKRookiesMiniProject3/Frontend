@@ -35,10 +35,16 @@ export const getErrorReportCategoryStats = async (token) => {
     const response = await axios.get(`${BASE_URL}/api/v1/error-reports/analytics/category-statistics`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data;
+    return {
+      success: true,
+      data: response.data.data,
+    };
   } catch (error) {
     console.error("에러 리포트 카테고리 통계 조회 실패:", error);
-    return [];
+    return {
+      success: false,
+      data: {},
+    };
   }
 };
 
