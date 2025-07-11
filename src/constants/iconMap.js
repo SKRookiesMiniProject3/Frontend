@@ -24,7 +24,7 @@ export const categoryNameMap = {
 };
 
 
-// 아이콘 컴포넌트를 직접 매핑 (JSX 아님)
+// 아이콘 컴포넌트를 직접 매핑 
 export const mainMenuIcons = {
   열람: LayoutGrid,
   등록: FilePlus,
