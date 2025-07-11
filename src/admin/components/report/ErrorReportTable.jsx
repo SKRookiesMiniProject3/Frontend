@@ -125,12 +125,13 @@ const ErrorReportTable = ({
         <thead>
           <tr>
            <th style={{ width: "6%" }}>ID</th>
-            <th style={{ width: "40%" }}>Title</th>
+            <th style={{ width: "36%" }}>Title</th>
             <th onClick={toggleCategoryFilter} style={{ cursor: 'pointer' }}>
               Category{categoryFilter !== "ALL" ? ` (${categoryFilter})` : ""}
             </th>
             <th onClick={() => handleSort("reportStatus")}>Status {enableSorting && sortConfig.key === "reportStatus" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
             <th onClick={() => handleSort("created_dt")}>Date {enableSorting && sortConfig.key === "created_dt" && (sortConfig.direction === "asc" ? "▲" : "▼")}</th>
+            <th style={{ width: "6%" }}></th>
           </tr>
         </thead>
         <tbody>
