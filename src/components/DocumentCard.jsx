@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from './DocumentCard.module.css';
-import { categoryImageMap } from '../constants/categoryImageMap'; // 매핑한 객체
+import { categoryImageMap } from '../constants/categoryImageMap';
 
-const DocumentCard = ({ fileName, createdAt, createdRole, locked, categoryKey }) => {
+const DocumentCard = ({ fileName, createdAt, createdRole, categoryKey }) => {
+  // 날짜 문자열을 'YYYY.MM.DD' 형식으로 변환
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -12,9 +13,8 @@ const DocumentCard = ({ fileName, createdAt, createdRole, locked, categoryKey })
   const imagePath = categoryImageMap[categoryKey] || categoryImageMap.DEFAULT;
 
   return (
-    <div className={`${styles.card} ${locked ? styles.locked : ''}`}>
+    <div className={styles.card}>
       <div className={styles.thumbnail}>
-        {locked && <span className={styles.lockSymbol}>🔒</span>}
         <img
           src={`/assets/${imagePath}`}
           alt="문서 이미지"

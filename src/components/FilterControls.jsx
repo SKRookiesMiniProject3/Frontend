@@ -13,7 +13,7 @@ const FilterControls = ({
 }) => {
   return (
     <div className={styles.controls}>
-      {/* 기간 라벨 + 날짜 선택기 */}
+      {/* 날짜 필터 */}
       <div className={styles.dateWrapper}>
         <label className={styles.label}>기간</label>
         <div className={styles.dateRow}>
@@ -23,8 +23,7 @@ const FilterControls = ({
             dateFormat="yyyy-MM-dd"
             className={styles.dateInput}
             placeholderText="시작일"
-            portalId="root-portal"  
-
+            portalId="root-portal"
           />
           <span className={styles.tilde}>~</span>
           <DatePicker
@@ -33,13 +32,12 @@ const FilterControls = ({
             dateFormat="yyyy-MM-dd"
             className={styles.dateInput}
             placeholderText="종료일"
-              portalId="root-portal"  
-
+            portalId="root-portal"
           />
         </div>
       </div>
 
-      {/* 정렬 라벨 버튼 */}
+      {/* 정렬 필터 */}
       <div className={styles.sortWrapper}>
         <div className={styles.sortButtonGroup}>
           <button

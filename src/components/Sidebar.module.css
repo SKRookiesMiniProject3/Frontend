@@ -1,7 +1,7 @@
 .sidebar {
   width: 200px;
   background-color: #f8f8f8;
-  height: 100%; /* ← 여기만 수정 */
+  height: 100%; 
   padding: 16px;
   box-sizing: border-box;
   border-right: 1px solid #ddd;
@@ -24,9 +24,9 @@
   cursor: pointer;
   font-size: 24px;
   color: #555;
-  padding: 6px 12px;     /* 좌측 정렬을 위한 패딩 조정 */
+  padding: 6px 12px;    
   margin-bottom: 8px;
-  align-self: flex-start; /* 우측 정렬 제거 → 좌측 정렬 */
+  align-self: flex-start; 
   display: flex;
   align-items: center;
 }
@@ -103,7 +103,7 @@
   margin: 10px 0;
 }
 .logoutSection {
-  margin-top: auto; /* 하단 고정 */
+  margin-top: auto; 
   padding-top: 20px;
   border-top: 1px solid #ddd;
 }

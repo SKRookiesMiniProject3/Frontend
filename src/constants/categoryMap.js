@@ -1,4 +1,3 @@
-// src/constants/categoryMap.js
 export const categoryNameToId = {
   "전체": null,         // 전체는 필터링 안 함
   "사업계획서": 1,

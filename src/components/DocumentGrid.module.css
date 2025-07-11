@@ -1,19 +1,19 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개 */
+  grid-template-columns: repeat(5, 1fr); 
   gap: 20px;
   padding: 20px 0;
   width: 100%;
 }
 
-/* 중간 화면에서는 4개 */
+
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* 모바일 화면에서는 2개 */
+
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);

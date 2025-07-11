@@ -30,10 +30,8 @@ const LoginPage = () => {
       role: roleFromApi,
     });
 
-    console.log("로그인 성공 - 저장된 토큰:", accessToken);
-    console.log("localStorage 저장됨:", localStorage.getItem("accessToken"));
+   
   } catch (err) {
-    console.error("로그인 실패:", err);
     setError(err.message || "로그인 실패");
   }
 };

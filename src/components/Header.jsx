@@ -18,6 +18,7 @@ const Header = ({ isAdminPage = false, onNavigateAdminPage }) => {
       </div>
 
       <div className={styles.rightSection}>
+        {/* CEO 사용자에게만 관리자/클라이언트 페이지 전환 스위치 제공 */}
         {role === 'CEO' && (
           <label className={styles.switch}>
             <span className={styles.switchText}>

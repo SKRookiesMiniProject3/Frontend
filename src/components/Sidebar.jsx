@@ -22,13 +22,15 @@ const Sidebar = ({
   onSelectCategory
 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const { logout } = useAuthStore();         // ✅ 여기서 직접 불러옴
+  const { logout } = useAuthStore();
   const navigate = useNavigate();
 
+  // 사이드바 접기/펴기 토글
   const handleToggle = () => {
     setCollapsed(!collapsed);
   };
 
+  // 로그아웃 후 메인으로 이동
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -89,7 +91,6 @@ const Sidebar = ({
         ))}
       </div>
 
-      {/* ✅ 로그아웃 직접 실행 */}
       <div className={styles.logoutSection}>
         <button className={styles.logoutButton} onClick={handleLogout}>
           <LogOut size={20} />

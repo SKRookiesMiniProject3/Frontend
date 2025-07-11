@@ -1,4 +1,3 @@
-// src/pages/DocumentViewer.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -43,6 +42,7 @@ const DocumentViewer = () => {
     currentPage * documentsPerPage
   );
 
+  // 문서 리스트를 API에서 불러오는 함수
   const loadDocs = async () => {
     try {
       const categoryTypeId = categoryNameToId[selectedCategory];
@@ -51,11 +51,8 @@ const DocumentViewer = () => {
         startDate: startDate ? startDate.toISOString().split('T')[0] : undefined,
         endDate: endDate ? endDate.toISOString().split('T')[0] : undefined
       });
-      console.log("📄 불러온 문서 리스트:", result);
       setDocuments(result);
-    } catch (err) {
-      console.error("문서 목록 불러오기 실패:", err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
@@ -74,23 +71,26 @@ const DocumentViewer = () => {
     }
   }, [activeMode]);
 
+  // 업로드 모달 닫기 핸들러
   const handleCloseModal = () => {
     setShowUploadModal(false);
     setActiveMode("열람");
   };
 
+  // 문서 업로드 후 상태 초기화 및 문서 재조회
   const handleUpload = ({ title, file, category }) => {
-    console.log("업로드된 문서:", title, file, category);
     setShowUploadModal(false);
     setActiveMode("열람");
     setSelectedCategory("전체");
     loadDocs();
   };
 
+  // 페이지 번호 변경 핸들러
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  // 관리자 페이지로 전환하거나 일반 페이지로 돌아가는 함수
   const handleToggleAdminPage = () => {
     if (user?.role === "CEO") {
       if (!isAdminPage) {

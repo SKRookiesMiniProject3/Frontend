@@ -1,4 +1,3 @@
-// src/constants/iconMap.js
 import { LayoutGrid, FilePlus, FileText, FileCheck2, FileBarChart, FileSignature, FileCode2 } from "lucide-react";
 
 export const mainMenuIcons = {

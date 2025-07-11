@@ -1,5 +1,3 @@
-// src/constants/roleMap.js
-
 export const roleOptions = [
   { id: 1, label: "인턴" },
   { id: 2, label: "사원" },

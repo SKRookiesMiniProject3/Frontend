@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   z-index: 999;
-  padding: 1rem; /* 여백 확보 */
+  padding: 1rem; 
   box-sizing: border-box;
 }
 
@@ -20,7 +20,7 @@
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
-  overflow-y: auto; /* 모달 내용이 넘칠 때 스크롤 */
+  overflow-y: auto; 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }
