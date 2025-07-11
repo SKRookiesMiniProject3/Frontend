@@ -1,5 +1,5 @@
 // src/pages/AdminDashboard.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import { fetchUsers } from '../api/users';
@@ -36,6 +36,9 @@ const AdminDashboard = () => {
   const [statusStats, setStatusStats] = useState({});
   const [categoryStats, setCategoryStats] = useState({});
   const [attackReportCount, setAttackReportCount] = useState(0);
+
+  const isFetchedRef = useRef(false);
+  const isAttackFetchedRef = useRef(false);
 
   const isThisWeek = (dateString) => {
     const now = new Date();
@@ -109,21 +112,27 @@ const AdminDashboard = () => {
 
   //에러 리포트
   useEffect(() => {
-    const fetchStats = async () => {
+      if (isFetchedRef.current) return;
+      isFetchedRef.current = true;
+
+      const fetchStats = async () => {
+      console.log("[fetchStats] 호출됨");
+
       const statusRes = await getErrorReportStatusStats(accessToken);
-      if (statusRes?.success) {
-        setStatusStats(statusRes.data);
-      }
+      if (statusRes?.success) setStatusStats(statusRes.data);
+
       const categoryRes = await getErrorReportCategoryStats(accessToken);
-      if (categoryRes?.success) {
-        setCategoryStats(categoryRes.data);
-      }
+      if (categoryRes?.success) setCategoryStats(categoryRes.data);
     };
+
     fetchStats();
   }, [accessToken]);
 
   //공격 에러 리포트
   useEffect(() => {
+    if (!accessToken || isAttackFetchedRef.current) return;
+    isAttackFetchedRef.current = true;
+
     const loadAttackReportStats = async () => {
       try {
         const res = await fetchAttackErrorReportsCount(accessToken);
@@ -135,7 +144,7 @@ const AdminDashboard = () => {
       }
     };
 
-    if (accessToken) loadAttackReportStats();
+    loadAttackReportStats();
   }, [accessToken]);
 
   //클라이언트 페이지 이동을 위한 핸들러

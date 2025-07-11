@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../ui/Pagination';
 import './ErrorReportTable.css';
@@ -24,7 +24,12 @@ const ErrorReportTable = ({
   const navigate = useNavigate();
   const [categoryFilter, setCategoryFilter] = useState("ALL");
 
+  const isFetchedRef = useRef(false);
+
   useEffect(() => {
+    if (isFetchedRef.current) return;
+    isFetchedRef.current = true;
+    
     const loadReports = async () => {
       if (!accessToken) return;
 
