@@ -46,8 +46,8 @@ const ErrorReportDetail = () => {
   const report = selectedReport;
 
   //File Path를 위한 url 설정
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const fullPath = `${baseUrl}${report.reportPath}`;
+  const fileBaseUrl = import.meta.env.VITE_API_FILE_BASE_URL;
+  const fullPath = `${fileBaseUrl}/${report.reportPath}`;
 
   //날짜 포맷팅
   const formatDate = (dateString) => {

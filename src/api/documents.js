@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const FILE_BASE_URL = import.meta.env.VITE_API_FILE_BASE_URL;
 
 // 문서 업로드
 export const uploadDocument = async (formData, accessToken) => {
@@ -16,8 +17,18 @@ export const uploadDocument = async (formData, accessToken) => {
 
 // 문서 다운로드 (자동 저장)
 export const downloadDocumentByHash = async (hash, fileName = 'downloaded_file.pdf') => {
+
+
+  const lastDotIndex = fileName.lastIndexOf('.');
+  let fileExtension = '';
+
+  if (lastDotIndex !== -1) { 
+    fileExtension = fileName.substring(lastDotIndex + 1);
+  }
+
   try {
-    const response = await axios.get(`${BASE_URL}/documents/files/${hash}`, {
+    // const response = await axios.get(`https://files.rookies-app.com/document/656e5820-af1b-4f22-b30e-4a0da2adae23.pdf`, {
+    const response = await axios.get(`${FILE_BASE_URL}/document/${hash}.${fileExtension}`, {
       responseType: 'blob', // 바이너리 파일
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
