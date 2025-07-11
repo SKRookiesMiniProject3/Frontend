@@ -4,13 +4,13 @@ import styles from './DocumentGrid.module.css';
 import { downloadDocumentByHash } from '../api/documents';
 import useAuthStore from '../stores/authStore';
 import { ROLE_NAME_TO_ID } from '../constants/roleMap';
-import { categoryImageMap } from '../constants/categoryImageMap';
+import { categoryIcons, categoryNameMap } from '../constants/iconMap';
 
 const DocumentGrid = ({ documents = [], mode = "view" }) => {
   const userRoleName = useAuthStore((state) => state.role);
   const userRoleId = ROLE_NAME_TO_ID[userRoleName] || 0;
 
-  // 문서 카드 클릭 시 다운로드 요청 처리
+  // 문서 클릭 시 다운로드 요청 처리
   const handleClickCard = async (doc) => {
     if (mode === "view") {
       try {
@@ -26,8 +26,8 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
       {[...documents]
         .sort((a, b) => b.id - a.id)
         .map((doc) => {
-          const categoryName = doc.categories?.[0]?.name || 'DEFAULT';
-          const categoryKey = categoryName.toUpperCase().replace(/ /g, '_');
+          const dbCategoryName = doc.categories?.[0]?.name || '전체';
+          const mappedName = categoryNameMap[dbCategoryName] || '전체';
 
           return (
             <div
@@ -39,7 +39,7 @@ const DocumentGrid = ({ documents = [], mode = "view" }) => {
                 fileName={doc.fileName}
                 createdAt={doc.createdAt}
                 createdRole={doc.createdRole}
-                categoryKey={categoryKey}
+                categoryKey={mappedName}
               />
             </div>
           );
