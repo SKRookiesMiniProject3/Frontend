@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import styles from "./UploadModal.module.css";
 import { uploadDocument } from "../api/documents";
 import useAuthStore from "../stores/authStore";
-import { roleOptions } from "../constants/roleMap"; 
+import { roleOptions, ROLE_NAME_TO_ID } from "../constants/roleMap";
 
-const UploadModal = ({ onClose }) => {
+const UploadModal = ({ onClose, onUpload }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categoryTypeId, setCategoryTypeId] = useState("1");
@@ -12,7 +12,10 @@ const UploadModal = ({ onClose }) => {
   const [file, setFile] = useState(null);
 
   const accessToken = useAuthStore((state) => state.accessToken);
+  const currentUserRole = useAuthStore((state) => state.role);
+  const currentUserRoleId = ROLE_NAME_TO_ID[currentUserRole] || 0;
 
+  // 문서 업로드를 처리하는 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,12 +31,15 @@ const UploadModal = ({ onClose }) => {
     formData.append("categoryTypeId", categoryTypeId);
     formData.append("readRoleId", readRoleId);
 
-
     try {
-      await uploadDocument(formData, accessToken);
-      onClose();
+      await uploadDocument(formData, accessToken); // 서버로 문서 전송
+      alert("문서가 등록되었습니다.");              // 등록 성공 알림
+
+      // 상위 컴포넌트(DocumentViewer)에서 문서 리스트를 다시 불러오도록 트리거
+      if (onUpload) {
+        onUpload({ title, file, category: categoryTypeId });
+      }
     } catch (error) {
-      console.error("업로드 실패:", error);
       alert("문서 업로드에 실패했습니다.");
     }
   };
@@ -89,14 +95,19 @@ const UploadModal = ({ onClose }) => {
 
           <div className={styles.roleGroup}>
             <label>
-            읽기 권한
-            <select value={readRoleId} onChange={(e) => setReadRoleId(e.target.value)}>
-                {roleOptions.map((role) => (
-                <option key={role.id} value={role.id}>
-                    {role.label}
-                </option>
-                ))}
-            </select>
+              읽기 권한
+              <select
+                value={readRoleId}
+                onChange={(e) => setReadRoleId(e.target.value)}
+              >
+                {roleOptions
+                  .filter((role) => role.id <= currentUserRoleId)
+                  .map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.label}
+                    </option>
+                  ))}
+              </select>
             </label>
           </div>
 
