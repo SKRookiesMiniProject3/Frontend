@@ -110,7 +110,7 @@ const AdminDashboard = () => {
     calcStats();
   }, [reports]);
 
-  //에러 리포트
+  //상태, 카테고리 통계
   useEffect(() => {
       if (isFetchedRef.current) return;
       isFetchedRef.current = true;

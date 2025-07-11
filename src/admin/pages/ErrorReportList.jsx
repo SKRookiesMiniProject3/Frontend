@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { fetchDailyErrorCounts, fetchReportsByStatus, fetchLatestErrorReports, fetchReportsByDateRange } from "../api/errorReports";
@@ -32,13 +32,10 @@ const ErrorReportList = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  const isChartFetchedRef = useRef(false);
+  const [setTotalReportCount] = useState(0);
 
   //날짜별 에러 리포트
   useEffect(() => {
-    if (isChartFetchedRef.current) return;
-    isChartFetchedRef.current = true;
-
     const loadChartData = async () => {
       try {
         const raw = await fetchDailyErrorCounts(accessToken, period);
@@ -115,6 +112,7 @@ const ErrorReportList = () => {
       created_dt: r.createdDt,
     }));
     setReports(mapped);
+    setTotalReportCount(mapped.length);
   };
 
   const handleStatusFilter = async (page, status) => {

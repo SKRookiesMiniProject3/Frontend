@@ -2,6 +2,25 @@ import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+//전체 에러 리포트 조회
+export const fetchAllErrorReports = async (token) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/error-reports/list/all`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (Array.isArray(response.data)) {
+      console.log("전체 에러 리포트 개수:", response.data.length);
+    } else {
+      console.warn("예상과 다른 형식의 응답입니다:", response.data);
+    }
+    return response.data;
+  } catch (error) {
+    console.error("전체 에러 리포트 조회 실패:", error);
+    return [];
+  }
+};
+
 //일별 에러 리포트 개수 조회
 export const fetchDailyErrorCounts = async (token, period = "7") => {
   try {

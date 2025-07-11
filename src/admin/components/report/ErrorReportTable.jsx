@@ -4,7 +4,7 @@ import Pagination from '../ui/Pagination';
 import './ErrorReportTable.css';
 import errorReportStore from "../../stores/errorReportStore";
 import useAuthStore from "../../../stores/authStore";
-import { fetchLatestErrorReports } from "../../api/errorReports";
+import { fetchAllErrorReports } from "../../api/errorReports";
 
 const ErrorReportTable = ({ 
   showSeeMore, 
@@ -29,11 +29,11 @@ const ErrorReportTable = ({
   useEffect(() => {
     if (isFetchedRef.current) return;
     isFetchedRef.current = true;
-    
+
     const loadReports = async () => {
       if (!accessToken) return;
 
-      const data = await fetchLatestErrorReports(accessToken);
+      const data = await fetchAllErrorReports(accessToken);
       console.log("\ud83d\udce6 \uc5d0\ub7ec \ub9ac\ud3ec\ud2b8 fetch \uacb0\uacfc:", data);
       const mappedData = data.map((r) => ({
         ...r,
